@@ -1,0 +1,6 @@
+@CloneTwiAPI_HostAddress = http://localhost:5051
+
+GET {{CloneTwiAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=1234567890Qwerty!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+      - ./apps/sql-server:/var/backup
+
+  clonetwiapi:
+    build:
+      context: apps/api/CloneTwiAPI
+      dockerfile: Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ClonTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
+    ports:
+      - "5000:5000"
+
+  clonetwiweb:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - clonetwiapi
+      
+  sqltools:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: sqltools
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./apps/sql-server:/var/backup
+    entrypoint: >
+      bash -c "
+        sleep 20 && 
+        /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P '1234567890Qwerty!' -i /var/backup/init.sql &&
+        sleep infinity
+      "
+
+volumes:
+  sqlserverdata:

@@ -1,0 +1,7 @@
+.vs/
+.env
+bin/
+obj/
+node_modules/
+build/
+**/appsettings.Development.json
