@@ -21,7 +21,7 @@ services:
       - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ClonTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CloneTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
     ports:
       - "5000:5000"
 
