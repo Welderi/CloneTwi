@@ -1,4 +1,7 @@
+using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -77,17 +80,17 @@ namespace CloneTwiAPI
 
             // SQL 
 
-            //builder.Services.AddDbContext<MyflixContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<CloneTwiContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // SERVICES
+            //SERVICES
 
-            //builder.Services.AddIdentityCore<ApplicationUser>(options =>
-            //{
-            //})
-            //    .AddRoles<IdentityRole>()
-            //    .AddEntityFrameworkStores<MyflixContext>()
-            //    .AddSignInManager();
+            builder.Services.AddIdentityCore<ApplicationUser>(options =>
+            {
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<CloneTwiContext>()
+                .AddSignInManager();
 
             builder.Services.AddControllers();
 
