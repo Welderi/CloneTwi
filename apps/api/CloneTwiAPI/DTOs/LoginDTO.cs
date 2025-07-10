@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyflixAPI.DTOs
+namespace CloneTwiAPI.DTOs
 {
     public class LoginDTO
     {

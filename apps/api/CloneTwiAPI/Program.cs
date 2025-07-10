@@ -1,4 +1,6 @@
+using CloneTwiAPI.DbServices;
 using CloneTwiAPI.Models;
+using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +33,8 @@ namespace CloneTwiAPI
             builder.Services.AddHttpClient();
             builder.Services.AddHttpContextAccessor();
 
-            //builder.Services.AddHttpClient<AzureTranslatorService>();
+            builder.Services.AddHttpClient<AzureTranslatorService>();
+            builder.Services.AddScoped<UserService>();
 
             // JWT
 
@@ -91,6 +94,10 @@ namespace CloneTwiAPI
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<CloneTwiContext>()
                 .AddSignInManager();
+
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped(typeof(IRepository<Message>), typeof(Repository<Message>));
+            builder.Services.AddSingleton<GenerateJwtTokenService>();
 
             builder.Services.AddControllers();
 
