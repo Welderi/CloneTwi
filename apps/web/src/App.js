@@ -1,19 +1,26 @@
-import {Route, Routes} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddPost from "./components/addPost/addPost";
 import Main from "./components/main/main";
-import './App.css';
+import Login from "./components/login/login";
+import Register from "./components/register/register";
+import ChangePassword from "./components/changePassword/changePassword";
+import UserProfile from "./components/userProfile/userProfile";
+import AdditionalUserSettings from "./components/additionalUserSettings/additionalUserSettings";
 
 function App() {
-  return (
-      <Route>
-          <div>
-              <Routes>
-                  <Route to={"/addPost"} element={<AddPost/>}/>
-                  <Route to={"/"} element={<Main/>}/>
-              </Routes>
-          </div>
-      </Route>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Main />} />
+                <Route path="/addPost" element={<AddPost />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/changePassword" element={<ChangePassword />} />
+                <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/additionalUserSettings" element={<AdditionalUserSettings />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

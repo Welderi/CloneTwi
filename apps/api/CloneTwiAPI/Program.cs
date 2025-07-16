@@ -96,17 +96,22 @@ namespace CloneTwiAPI
                 .AddSignInManager();
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped(typeof(IRepository<Message>), typeof(Repository<Message>));
             builder.Services.AddSingleton<GenerateJwtTokenService>();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<UserGetter>();
+            builder.Services.AddScoped<MessageService>();
 
             builder.Services.AddControllers();
+
+            // APP
 
             var app = builder.Build();
 
             app.UseCors("AllowReactApp");
+            app.UseStaticFiles();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 

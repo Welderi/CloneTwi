@@ -43,5 +43,19 @@ namespace CloneTwiAPI.Controllers.DbControllers
 
             return await _service.ChangePassword(model);
         }
+
+        [Authorize]
+        [HttpPost("additionalsettings")]
+        public async Task<ActionResult> AdditionalSettings([FromForm] AdditionalUserSettingsDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return await _service.AdditionalSettings(model);
+        }
+
+        [Authorize]
+        [HttpGet("getuserinfo")]
+        public async Task<IActionResult?> GetInfo() => await _service.GetInfo();
     }
 }

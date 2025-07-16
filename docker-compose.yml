@@ -24,6 +24,8 @@ services:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CloneTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
     ports:
       - "5000:5000"
+    volumes:
+      - ./apps/api/CloneTwiAPI/wwwroot:/app/wwwroot
 
   clonetwiweb:
     build:

@@ -2,7 +2,6 @@
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace CloneTwiAPI.Services
 {
@@ -12,14 +11,17 @@ namespace CloneTwiAPI.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly GenerateJwtTokenService _generateToken;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserGetter _userGetter;
 
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            GenerateJwtTokenService generateToken, IHttpContextAccessor httpContextAccessor)
+            GenerateJwtTokenService generateToken, IHttpContextAccessor httpContextAccessor,
+            UserGetter userGetter)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _generateToken = generateToken;
             _httpContextAccessor = httpContextAccessor;
+            _userGetter = userGetter;
         }
 
         public async Task<ActionResult> Register(RegisterDTO model)
@@ -71,12 +73,7 @@ namespace CloneTwiAPI.Services
 
         public async Task<ActionResult> ChangePassword(ChangePasswordDTO model)
         {
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-                return new UnauthorizedResult();
-
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userGetter.GetUser();
 
             if (model.CurrentPassword == model.NewPassword)
                 return new BadRequestObjectResult("New password cannot be the same as current one");
@@ -87,6 +84,50 @@ namespace CloneTwiAPI.Services
                 return new BadRequestObjectResult(result.Errors);
 
             return new OkObjectResult("You have changed your password");
+        }
+
+        public async Task<ActionResult> AdditionalSettings(AdditionalUserSettingsDTO model)
+        {
+            var user = await _userGetter.GetUser();
+
+            if (model.Bio != null)
+                user!.Bio = model.Bio;
+
+            if (model.ProfileImageUrl != null)
+            {
+                var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                var uploadsFolder = Path.Combine(webRootPath, "images");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(model.ProfileImageUrl.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfileImageUrl.CopyToAsync(stream);
+                }
+
+                user!.ProfileImageUrl = "/images/" + fileName;
+            }
+
+            await _userManager.UpdateAsync(user!);
+
+            return new OkObjectResult("You have everything added");
+        }
+
+        public async Task<IActionResult?> GetInfo()
+        {
+            var user = await _userGetter.GetUser();
+
+            return new OkObjectResult(new
+            {
+                user!.UserName,
+                user.Email,
+                user.Bio,
+                user.ProfileImageUrl,
+                user.Title
+            });
         }
     }
 }

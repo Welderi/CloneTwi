@@ -1,5 +1,6 @@
-﻿using CloneTwiAPI.DbServices;
+﻿using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Controllers.DbControllers
 {
@@ -8,39 +9,39 @@ namespace CloneTwiAPI.Controllers.DbControllers
     public class GenericController<T> : ControllerBase
         where T : class
     {
-        protected readonly IRepository<T> _repository;
+        protected readonly CloneTwiContext _repository;
 
-        protected GenericController(IRepository<T> repository)
+        protected GenericController(CloneTwiContext repository)
         {
             _repository = repository;
         }
 
         [HttpPost]
-        protected async Task<IActionResult> AddAsync([FromBody] T model)
+        protected async Task<T> AddAsync([FromBody] T model)
         {
-            var result = await _repository.AddAsync(model);
-            return Ok(result);
+            await _repository.Set<T>().AddAsync(model);
+            await _repository.SaveChangesAsync();
+            return model;
         }
 
         [HttpDelete]
-        protected async Task<IActionResult> RemoveAsync([FromBody] T model)
+        protected async Task<bool> RemoveAsync([FromBody] T model)
         {
-            var success = await _repository.RemoveAsync(model);
-            return success ? Ok() : NotFound();
+            var success = _repository.Set<T>().Remove(model);
+            return await _repository.SaveChangesAsync() > 0;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var result = await _repository.GetByIdAsync(id);
+            var result = await _repository.Set<T>().FindAsync(id);
             return result is not null ? Ok(result) : NotFound();
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            var result = await _repository.GetAllAsync();
-            return Ok(result);
+            return await _repository.Set<T>().ToListAsync();
         }
     }
 }
