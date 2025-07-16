@@ -102,6 +102,7 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<MessageService>();
 
             builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // APP
 

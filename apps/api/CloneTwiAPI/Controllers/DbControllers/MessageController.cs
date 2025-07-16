@@ -1,24 +1,38 @@
-﻿using CloneTwiAPI.DTOs;
+﻿using AutoMapper;
+using CloneTwiAPI.DTOs;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloneTwiAPI.Controllers.DbControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageController : GenericController<Message>
+    public class MessageController : GenericController<MessageDTO, Message>
     {
-        private readonly MessageService _messageService;
-        public MessageController(CloneTwiContext context, MessageService messageService) : base(context)
+        public MessageController(CloneTwiContext context, UserGetter userGetter, IMapper mapper)
+            : base(context, userGetter, mapper)
         {
-            _messageService = messageService;
         }
 
-        [Authorize]
         [HttpPost("addmessage")]
-        public async Task<IActionResult?> AddAsync([FromBody] MessageDTO model)
-            => await _messageService.AddAsync(model);
+        public async Task<IActionResult> Add([FromBody] MessageDTO dto)
+        {
+            var result = await AddAsync(dto, name: "Message", userBool: true, messageId: null);
+            return Ok(result);
+        }
+
+        [HttpGet("getmessages")]
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetAllMessagesAsync()
+        {
+            try
+            {
+                return await GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }
