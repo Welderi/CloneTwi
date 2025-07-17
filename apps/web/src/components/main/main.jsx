@@ -6,7 +6,7 @@ function Main(){
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/message/getmessages")
+        fetch("http://localhost:5000/api/message/getgroupedmessages")
             .then((res) => res.json())
             .then((data) => setMessages(data))
             .catch(err => {
@@ -24,8 +24,10 @@ function Main(){
             <Link to={"/userProfile"}>Profile</Link>
             <Link to={"/additionalUserSettings"}>Settings</Link>
             <h2>Messages: </h2>
-            {messages && messages.map(msg => (
-                <MessageCard key={msg.messageId} message={msg} />
+            {messages && messages
+                .filter(msg => msg.messageParentId === null)
+                .map(msg => (
+                    <MessageCard key={msg.messageId} message={msg} />
             ))}
         </div>
     );

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CloneTwiAPI.Attributes;
 
 namespace CloneTwiAPI.Models;
 
@@ -9,6 +8,7 @@ public partial class EmojiMessage
 
     public string EmojiValue { get; set; } = null!;
 
+    [MessageId]
     public int EmojiMessageId { get; set; }
 
     public virtual Message EmojiMessageNavigation { get; set; } = null!;

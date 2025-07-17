@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CloneTwiAPI.Attributes;
 
 namespace CloneTwiAPI.Models;
 
@@ -9,6 +8,7 @@ public partial class ThemeMessage
 
     public string ThemeType { get; set; } = null!;
 
+    [MessageId]
     public int ThemeMessageId { get; set; }
 
     public virtual Message ThemeMessageNavigation { get; set; } = null!;

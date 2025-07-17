@@ -1,4 +1,3 @@
-using CloneTwiAPI.DbServices;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,11 +94,9 @@ namespace CloneTwiAPI
                 .AddEntityFrameworkStores<CloneTwiContext>()
                 .AddSignInManager();
 
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddSingleton<GenerateJwtTokenService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserGetter>();
-            builder.Services.AddScoped<MessageService>();
 
             builder.Services.AddControllers();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

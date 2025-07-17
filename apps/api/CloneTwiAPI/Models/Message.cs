@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CloneTwiAPI.Attributes;
 
 namespace CloneTwiAPI.Models;
 
@@ -11,10 +10,12 @@ public partial class Message
 
     public bool? MessageIsEdited { get; set; }
 
+    [MessageId]
     public int? MessageParentId { get; set; }
 
     public int? MessagePreviousVersionId { get; set; }
 
+    [UserId]
     public string MessageUserId { get; set; } = null!;
 
     public virtual ICollection<AudioMessage> AudioMessages { get; set; } = new List<AudioMessage>();

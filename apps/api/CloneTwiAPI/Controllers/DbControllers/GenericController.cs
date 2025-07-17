@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloneTwiAPI.Attributes;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,13 +10,13 @@ namespace CloneTwiAPI.Controllers.DbControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenericController<T, TEntity> : ControllerBase
-        where T : class
+    public class GenericController<TDto, TEntity> : ControllerBase
+        where TDto : class
         where TEntity : class
     {
         protected readonly CloneTwiContext _context;
         private readonly UserGetter _userGetter;
-        private readonly IMapper _mapper;
+        protected readonly IMapper _mapper;
 
         protected GenericController(CloneTwiContext context, UserGetter userGetter, IMapper mapper)
         {
@@ -25,25 +26,37 @@ namespace CloneTwiAPI.Controllers.DbControllers
         }
 
         [Authorize]
-        protected async Task<T> AddAsync([FromBody] T model, string name, bool userBool, int? messageId)
+        protected async Task<TDto> AddAsync([FromBody] TDto model,
+            bool userBool = false, int? messageId = null)
         {
             var entity = _mapper.Map<TEntity>(model);
 
             if (userBool)
             {
                 var user = await _userGetter.GetUser();
-                var userProp = entity!.GetType().GetProperty($"{name}UserId");
+
+                var userProp = entity!
+                    .GetType()
+                    .GetProperties()
+                    .FirstOrDefault(p => Attribute.IsDefined(p, typeof(UserIdAttribute)));
 
                 if (userProp != null)
+                {
                     userProp.SetValue(entity, user!.Id);
+                }
             }
 
             if (messageId != null)
             {
-                var messageProp = entity!.GetType().GetProperty($"{name}MessageId");
+                var messageProp = entity!
+                    .GetType()
+                    .GetProperties()
+                    .FirstOrDefault(p => Attribute.IsDefined(p, typeof(MessageIdAttribute)));
 
                 if (messageProp != null)
+                {
                     messageProp.SetValue(entity, messageId);
+                }
             }
 
             await _context.Set<TEntity>().AddAsync(entity!);
@@ -54,7 +67,7 @@ namespace CloneTwiAPI.Controllers.DbControllers
 
         [HttpDelete]
         [Authorize]
-        protected async Task<bool> RemoveAsync([FromBody] T model)
+        protected async Task<bool> RemoveAsync([FromBody] TDto model)
         {
             var entity = _mapper.Map<TEntity>(model);
             if (entity == null) return false;
@@ -72,10 +85,10 @@ namespace CloneTwiAPI.Controllers.DbControllers
         }
 
         [Authorize]
-        public async Task<ActionResult<IEnumerable<T>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<TDto>>> GetAllAsync()
         {
             var entities = await _context.Set<TEntity>().ToListAsync();
-            var dtos = _mapper.Map<IEnumerable<T>>(entities);
+            var dtos = _mapper.Map<IEnumerable<TDto>>(entities);
             return new OkObjectResult(dtos);
         }
     }

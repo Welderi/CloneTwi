@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CloneTwiAPI.Attributes;
 
 namespace CloneTwiAPI.Models;
 
@@ -11,6 +10,7 @@ public partial class VideoMessage
 
     public string? VideoPreview { get; set; }
 
+    [MessageId]
     public int VideoMessageId { get; set; }
 
     public virtual Message VideoMessageNavigation { get; set; } = null!;

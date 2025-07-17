@@ -3,6 +3,7 @@ using CloneTwiAPI.DTOs;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Controllers.DbControllers
 {
@@ -18,21 +19,28 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [HttpPost("addmessage")]
         public async Task<IActionResult> Add([FromBody] MessageDTO dto)
         {
-            var result = await AddAsync(dto, name: "Message", userBool: true, messageId: null);
+            var result = await AddAsync(dto, userBool: true);
+            return Ok(result);
+        }
+
+        [HttpPost("addparentmessage")]
+        public async Task<IActionResult> AddParent([FromBody] MessageDTO dto)
+        {
+            var result = await AddAsync(dto, userBool: true, messageId: dto.MessageParentId);
             return Ok(result);
         }
 
         [HttpGet("getmessages")]
-        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetAllMessagesAsync()
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetAllMessagesAsync() => await GetAllAsync();
+
+        [HttpGet("getgroupedmessages")]
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync()
         {
-            try
-            {
-                return await GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
+            var entities = await _context.Set<Message>()
+                .Include(m => m.InverseMessageParent)
+                .ToListAsync();
+
+            return Ok(_mapper.Map<IEnumerable<MessageDTO>>(entities));
         }
     }
 }

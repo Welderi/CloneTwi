@@ -8,8 +8,10 @@ namespace CloneTwiAPI.Services
     {
         public MappingProfile()
         {
-            CreateMap<MessageDTO, Message>();
-            CreateMap<Message, MessageDTO>();
+            CreateMap<Message, MessageDTO>()
+                    .ForMember(dest => dest.Parents, opt => opt.MapFrom(src => src.InverseMessageParent))
+                    .ReverseMap();
+
         }
     }
 }

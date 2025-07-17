@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CloneTwiAPI.Attributes;
 
 namespace CloneTwiAPI.Models;
 
@@ -9,6 +8,7 @@ public partial class AudioMessage
 
     public string AudioFile { get; set; } = null!;
 
+    [MessageId]
     public int AudioMessageId { get; set; }
 
     public virtual Message AudioMessageNavigation { get; set; } = null!;
