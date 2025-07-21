@@ -26,10 +26,11 @@ namespace CloneTwiAPI.Controllers.DbControllers
         }
 
         [Authorize]
-        protected async Task<TDto> AddAsync([FromBody] TDto model,
-            bool userBool = false, int? messageId = null)
+        protected async Task<TDto?> AddAsync([FromBody] TDto? model = null,
+            bool userBool = false, int? messageId = null, TEntity? entity = null)
         {
-            var entity = _mapper.Map<TEntity>(model);
+            if (entity == null)
+                entity = _mapper.Map<TEntity>(model);
 
             if (userBool)
             {
@@ -64,13 +65,18 @@ namespace CloneTwiAPI.Controllers.DbControllers
             return model;
         }
 
+        protected async Task AddRangeAsync<TEntityToAdd>(List<TEntityToAdd> entities) where TEntityToAdd : class
+        {
+            await _context.Set<TEntityToAdd>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+        }
 
         [HttpDelete]
         [Authorize]
-        protected async Task<bool> RemoveAsync([FromBody] TDto model)
+        protected async Task<bool> RemoveAsync([FromBody] TDto model, TEntity? entity = null)
         {
-            var entity = _mapper.Map<TEntity>(model);
-            if (entity == null) return false;
+            if (entity == null)
+                entity = _mapper.Map<TEntity>(model);
 
             var success = _context.Set<TEntity>().Remove(entity);
             return await _context.SaveChangesAsync() > 0;

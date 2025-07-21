@@ -95,20 +95,7 @@ namespace CloneTwiAPI.Services
 
             if (model.ProfileImageUrl != null)
             {
-                var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-                var uploadsFolder = Path.Combine(webRootPath, "images");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var fileName = Guid.NewGuid() + Path.GetExtension(model.ProfileImageUrl.FileName);
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.ProfileImageUrl.CopyToAsync(stream);
-                }
-
-                user!.ProfileImageUrl = "/images/" + fileName;
+                user!.ProfileImageUrl = await UploadService.Upload("userImages", model.ProfileImageUrl);
             }
 
             await _userManager.UpdateAsync(user!);

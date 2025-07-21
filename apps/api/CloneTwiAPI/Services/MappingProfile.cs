@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using CloneTwiAPI.DTOs;
-using CloneTwiAPI.Models;
 
 namespace CloneTwiAPI.Services
 {
@@ -8,9 +6,10 @@ namespace CloneTwiAPI.Services
     {
         public MappingProfile()
         {
-            CreateMap<Message, MessageDTO>()
-                    .ForMember(dest => dest.Parents, opt => opt.MapFrom(src => src.InverseMessageParent))
-                    .ReverseMap();
+            //CreateMap<Message, MessageDTO>()
+            //        .ForMember(dest => dest.Parents, opt => opt.MapFrom(src => src.InverseMessageParent))
+            //        .ForMember(dest => dest.VideoMessages, opt => opt.MapFrom(src => src.VideoMessages))
+            //        .ReverseMap();
 
         }
     }
