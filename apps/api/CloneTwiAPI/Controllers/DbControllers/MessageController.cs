@@ -1,69 +1,42 @@
-﻿using AutoMapper;
-using CloneTwiAPI.DTOs;
-using CloneTwiAPI.Models;
+﻿using CloneTwiAPI.DTOs;
 using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Controllers.DbControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageController : GenericController<MessageDTO, Message>
+    public class MessageController
     {
-        public MessageController(CloneTwiContext context, UserGetter userGetter, IMapper mapper)
-            : base(context, userGetter, mapper)
+        private readonly MessageService _service;
+
+        public MessageController(MessageService service)
         {
+            _service = service;
         }
 
         [HttpPost("addmessage")]
-        public async Task<IActionResult> Add([FromForm] MessageDTO dto)
+        public async Task<IActionResult> AddAsync([FromForm] MessageDTO dto)
         {
-            var message = await MessageAutoMapper.ToEntity(dto);
-            var result = await AddAsync(dto, userBool: true, entity: message);
-
-            if (dto.VideoMessages != null)
-            {
-                var videoEntities = new List<VideoMessage>();
-
-                foreach (var vm in dto.VideoMessages)
-                {
-                    var videoPath = await UploadService.Upload("videoImages", vm);
-
-                    var videoEntity = new VideoMessage
-                    {
-                        VideoFile = videoPath,
-                        VideoMessageId = message.MessageId
-                    };
-
-                    videoEntities.Add(videoEntity);
-                }
-
-                await AddRangeAsync(videoEntities);
-            }
-
-            return Ok(result);
+            return await _service.AddMessageAsync(dto);
         }
 
         [HttpPost("addparentmessage")]
-        public async Task<IActionResult> AddParent([FromBody] MessageDTO dto)
+        public async Task<IActionResult> AddParentAsync([FromBody] MessageDTO dto)
         {
-            var result = await AddAsync(dto, userBool: true, messageId: dto.MessageParentId,
-                                        entity: await MessageAutoMapper.ToEntity(dto));
-            return Ok(result);
+            return await _service.AddParentAsync(dto);
+        }
+
+        [HttpDelete("removemessage")]
+        public async Task<bool> RemoveAsync([FromBody] MessageDTO dto)
+        {
+            return await _service.RemoveAsync(dto);
         }
 
         [HttpGet("getgroupedmessages")]
         public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync()
         {
-            var entities = await _context.Set<Message>()
-                .Include(m => m.InverseMessageParent)
-                .Include(vm => vm.VideoMessages)
-                .ToListAsync();
-
-            var dtos = entities.Select(MessageAutoMapper.ToDto).ToList();
-
-            return Ok(dtos);
+            return await _service.GetGroupedMessagesAsync();
         }
     }
 }

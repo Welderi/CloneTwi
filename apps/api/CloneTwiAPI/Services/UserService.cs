@@ -65,7 +65,7 @@ namespace CloneTwiAPI.Services
                 HttpOnly = true,
                 Secure = false,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(1)
+                Expires = DateTime.UtcNow.AddHours(100)
             });
 
             return new OkObjectResult("User signed in successfully");

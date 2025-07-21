@@ -97,6 +97,8 @@ namespace CloneTwiAPI
             builder.Services.AddSingleton<GenerateJwtTokenService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserGetter>();
+            builder.Services.AddScoped<MessageService>();
+            builder.Services.AddScoped<GenericService>();
 
             builder.Services.AddControllers();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
