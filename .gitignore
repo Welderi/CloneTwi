@@ -5,3 +5,4 @@ obj/
 node_modules/
 build/
 **/appsettings.Development.json
+**/wwwroot
