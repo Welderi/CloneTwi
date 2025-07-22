@@ -1,3 +1,4 @@
+using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,6 +30,7 @@ namespace CloneTwiAPI
 
             // HTTP CLIENT
 
+            builder.Services.AddSignalR();
             builder.Services.AddHttpClient();
             builder.Services.AddHttpContextAccessor();
 
@@ -69,6 +71,8 @@ namespace CloneTwiAPI
                 };
             });
 
+            // REACT
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowReactApp", policy =>
@@ -98,7 +102,7 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserGetter>();
             builder.Services.AddScoped<MessageService>();
-            builder.Services.AddScoped<GenericService>();
+            builder.Services.AddScoped(typeof(GenericService<,>));
 
             builder.Services.AddControllers();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -114,6 +118,10 @@ namespace CloneTwiAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // HUBS
+
+            app.MapHub<PostHub>("/post");
 
             app.Run();
         }

@@ -1,21 +1,27 @@
 ﻿using CloneTwiAPI.DTOs;
+using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {
     public class MessageService : GenericService<MessageDTO, Message>
     {
-        public MessageService(CloneTwiContext context, UserGetter userGetter)
+        private readonly IHubContext<PostHub> _hub;
+        public MessageService(CloneTwiContext context, UserGetter userGetter, IHubContext<PostHub> hub)
             : base(context, userGetter)
         {
+            _hub = hub;
         }
 
         public async Task<IActionResult> AddMessageAsync(MessageDTO dto)
         {
             var message = await MessageAutoMapper.ToEntity(dto);
             var result = await AddAsync(dto, userBool: true, entity: message);
+
+            var savedMessage = (Message)((OkObjectResult)result).Value;
 
             // Video | Image
 
@@ -39,13 +45,18 @@ namespace CloneTwiAPI.Services
                 await AddRangeAsync(videoEntities);
             }
 
-            return new OkObjectResult(result);
+            await _hub.Clients.All.SendAsync("messages", savedMessage);
+
+            return new OkObjectResult(savedMessage);
         }
 
         public async Task<IActionResult> AddParentAsync(MessageDTO dto)
         {
             var result = await AddAsync(dto, userBool: true, messageId: dto.MessageParentId,
                                         entity: await MessageAutoMapper.ToEntity(dto));
+
+            await _hub.Clients.All.SendAsync("messages", result);
+
             return new OkObjectResult(result);
         }
 
@@ -59,6 +70,7 @@ namespace CloneTwiAPI.Services
             var entities = await _context.Set<Message>()
                 .Include(m => m.InverseMessageParent)
                 .Include(vm => vm.VideoMessages)
+                .Include(l => l.EmojiMessages)
                 .ToListAsync();
 
             var dtos = entities.Select(MessageAutoMapper.ToDto).ToList();

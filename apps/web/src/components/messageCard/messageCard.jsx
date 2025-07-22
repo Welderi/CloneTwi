@@ -73,13 +73,10 @@ function MessageCard({ message }){
                 {arrowDown ? "↓ Show Replies" : "↑ Hide Replies"}
             </button>
 
-            {!arrowDown && message.parents && message.parents.length > 0 && (
-                <div>
-                    {message.parents.map(msg => (
-                        <MessageCard key={msg.messageId} message={msg}/>
-                    ))}
-                </div>
-            )}
+            {!arrowDown && message.parents && message.parents.length > 0 && message.parents.map((msg, index) => (
+                <MessageCard key={`${msg.messageId}-${index}`} message={msg} />
+            ))}
+
 
             <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
             <button onClick={addParentMessage}>Reply</button>

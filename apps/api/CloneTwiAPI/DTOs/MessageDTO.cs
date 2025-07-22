@@ -10,5 +10,7 @@
         public List<MessageDTO>? Parents { get; set; }
         public List<IFormFile>? VideoMessages { get; set; }
         public List<string>? VideoMessagesTo { get; set; }
+        public int Likes { get; set; }
+        public bool IsLikedByCurrentUser { get; set; }
     }
 }

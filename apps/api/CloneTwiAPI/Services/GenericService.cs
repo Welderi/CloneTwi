@@ -21,7 +21,7 @@ namespace CloneTwiAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<TDto?> AddAsync(TDto? model = null,
+        public async Task<IActionResult> AddAsync(TDto? model = null,
             bool userBool = false, int? messageId = null, TEntity? entity = null)
         {
             if (entity == null)
@@ -30,6 +30,9 @@ namespace CloneTwiAPI.Services
             if (userBool)
             {
                 var user = await _userGetter.GetUser();
+
+                if (user == null)
+                    return new UnauthorizedObjectResult(user);
 
                 var userProp = entity!
                     .GetType()
@@ -57,7 +60,7 @@ namespace CloneTwiAPI.Services
 
             await _context.Set<TEntity>().AddAsync(entity!);
             await _context.SaveChangesAsync();
-            return model;
+            return new OkObjectResult(entity);
         }
 
         public async Task AddRangeAsync<TEntityToAdd>(List<TEntityToAdd> entities) where TEntityToAdd : class
