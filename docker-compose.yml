@@ -15,26 +15,35 @@ services:
 
   api:
     build:
-      context: apps/api/CloneTwiAPI
+      context: ./apps/api/CloneTwiAPI
       dockerfile: Dockerfile
     depends_on:
       - sqlserver
+    command: dotnet watch run --urls=http://0.0.0.0:5000
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CloneTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
     ports:
       - "5000:5000"
     volumes:
-      - ./apps/api/CloneTwiAPI/wwwroot:/app/wwwroot
+      # - ./apps/api/CloneTwiAPI:/src:cached
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+      # - ./apps/api/CloneTwiAPI:/app
+      # - /app/obj
+      # - /app/bin
 
   web:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
+    volumes:
+      - ./apps/web:/app    
+      - /app/node_modules            
     ports:
       - "3000:3000"
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     depends_on:
       - api
       

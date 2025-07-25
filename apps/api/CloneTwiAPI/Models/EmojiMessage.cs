@@ -8,6 +8,9 @@ public partial class EmojiMessage
 
     public string EmojiValue { get; set; } = null!;
 
+    [UserId]
+    public string EmojiUserId { get; set; }
+
     [MessageId]
     public int EmojiMessageId { get; set; }
 

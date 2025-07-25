@@ -21,7 +21,9 @@ namespace CloneTwiAPI.Services
             var message = await MessageAutoMapper.ToEntity(dto);
             var result = await AddAsync(dto, userBool: true, entity: message);
 
-            var savedMessage = (Message)((OkObjectResult)result).Value;
+            var savedMessage = (Message)((OkObjectResult)result).Value!;
+
+            var newDto = MessageAutoMapper.ToDto(savedMessage);
 
             // Video | Image
 
@@ -47,7 +49,7 @@ namespace CloneTwiAPI.Services
 
             await _hub.Clients.All.SendAsync("messages", savedMessage);
 
-            return new OkObjectResult(savedMessage);
+            return new OkObjectResult(newDto);
         }
 
         public async Task<IActionResult> AddParentAsync(MessageDTO dto)
@@ -62,7 +64,7 @@ namespace CloneTwiAPI.Services
 
         public async Task<bool> RemoveMessageAsync(MessageDTO dto)
         {
-            return await RemoveAsync(dto, entity: await MessageAutoMapper.ToEntity(dto));
+            return await RemoveAsync(entity: await MessageAutoMapper.ToEntity(dto));
         }
 
         public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync()

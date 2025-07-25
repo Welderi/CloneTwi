@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using CloneTwiAPI.Attributes;
+﻿using CloneTwiAPI.Attributes;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {
@@ -11,22 +9,17 @@ namespace CloneTwiAPI.Services
         where TEntity : class
     {
         protected readonly CloneTwiContext _context;
-        private readonly UserGetter _userGetter;
-        private readonly IMapper? _mapper;
+        protected readonly UserGetter _userGetter;
 
-        public GenericService(CloneTwiContext context, UserGetter userGetter, IMapper? mapper = null)
+        public GenericService(CloneTwiContext context, UserGetter userGetter)
         {
             _context = context;
             _userGetter = userGetter;
-            _mapper = mapper;
         }
 
         public async Task<IActionResult> AddAsync(TDto? model = null,
             bool userBool = false, int? messageId = null, TEntity? entity = null)
         {
-            if (entity == null)
-                entity = _mapper.Map<TEntity>(model);
-
             if (userBool)
             {
                 var user = await _userGetter.GetUser();
@@ -69,11 +62,8 @@ namespace CloneTwiAPI.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> RemoveAsync([FromBody] TDto model, TEntity? entity = null)
+        public async Task<bool> RemoveAsync(TEntity entity)
         {
-            if (entity == null)
-                entity = _mapper.Map<TEntity>(model);
-
             var success = _context.Set<TEntity>().Remove(entity);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -84,11 +74,11 @@ namespace CloneTwiAPI.Services
             return result is not null ? new OkObjectResult(result) : new NotFoundObjectResult(result);
         }
 
-        public async Task<ActionResult<IEnumerable<TDto>>> GetAllAsync()
-        {
-            var entities = await _context.Set<TEntity>().ToListAsync();
-            var dtos = _mapper.Map<IEnumerable<TDto>>(entities);
-            return new OkObjectResult(dtos);
-        }
+        //public async Task<ActionResult<IEnumerable<TDto>>> GetAllAsync()
+        //{
+        //    var entities = await _context.Set<TEntity>().ToListAsync();
+        //    var dtos = _mapper.Map<IEnumerable<TDto>>(entities);
+        //    return new OkObjectResult(dtos);
+        //}
     }
 }

@@ -102,10 +102,10 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UserGetter>();
             builder.Services.AddScoped<MessageService>();
+            builder.Services.AddScoped<EmojiService>();
             builder.Services.AddScoped(typeof(GenericService<,>));
 
             builder.Services.AddControllers();
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // APP
 

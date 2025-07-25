@@ -30,12 +30,12 @@ namespace CloneTwiAPI.Controllers.DbControllers
             return await _service.AddParentAsync(dto);
         }
 
-        [Authorize]
-        [HttpDelete("removemessage")]
-        public async Task<bool> RemoveAsync([FromBody] MessageDTO dto)
-        {
-            return await _service.RemoveAsync(dto);
-        }
+        //[Authorize]
+        //[HttpDelete("removemessage")]
+        //public async Task<bool> RemoveAsync([FromBody] MessageDTO dto)
+        //{
+        //    return await _service.RemoveAsync(dto);
+        //}
 
         [Authorize]
         [HttpGet("getgroupedmessages")]

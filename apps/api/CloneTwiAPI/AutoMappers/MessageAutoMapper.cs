@@ -21,7 +21,8 @@ namespace CloneTwiAPI
         }
 
         public static MessageDTO ToDto(Message entity)
-            => new MessageDTO
+        {
+            return new MessageDTO
             {
                 MessageId = entity.MessageId,
                 MessageText = entity.MessageText,
@@ -30,7 +31,11 @@ namespace CloneTwiAPI
                 Parents = entity.InverseMessageParent != null
                         ? entity.InverseMessageParent.Select(e => ToDto(e)).ToList()
                         : null,
-                VideoMessagesTo = entity.VideoMessages.Select(e => e.VideoFile).ToList()
+                VideoMessagesTo = entity.VideoMessages.Select(e => e.VideoFile).ToList(),
+                Emojis = entity.EmojiMessages
+                              .GroupBy(e => e.EmojiValue)
+                              .ToDictionary(g => g.Key, g => g.Count())
             };
+        }
     }
 }

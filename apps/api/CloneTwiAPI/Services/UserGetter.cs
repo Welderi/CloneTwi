@@ -27,5 +27,10 @@ namespace CloneTwiAPI.Services
 
             return user;
         }
+
+        public bool IsCurrentUser(string userId)
+        {
+            return true ? userId == Convert.ToString(GetUser().Id) : false;
+        }
     }
 }

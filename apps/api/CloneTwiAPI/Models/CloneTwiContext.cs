@@ -81,6 +81,9 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
             entity.ToTable("EmojiMessage");
 
             entity.Property(e => e.EmojiMessageId).HasColumnName("Emoji_MessageId");
+            entity.Property(e => e.EmojiUserId)
+                .HasMaxLength(450)
+                .HasColumnName("Emoji_UserId");
             entity.Property(e => e.EmojiValue)
                 .HasMaxLength(100)
                 .UseCollation("Latin1_General_100_CI_AI_SC_UTF8");
