@@ -1,15 +1,20 @@
 ﻿using CloneTwiAPI.AutoMappers;
 using CloneTwiAPI.DTOs;
+using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CloneTwiAPI.Services
 {
     public class EmojiService : GenericService<EmojiDTO, EmojiMessage>
     {
-        public EmojiService(CloneTwiContext context, UserGetter userGetter)
+        private readonly IHubContext<EmojiHub> _hub;
+        public EmojiService(CloneTwiContext context, UserGetter userGetter, IHubContext<EmojiHub> hub)
             : base(context, userGetter)
-        { }
+        {
+            _hub = hub;
+        }
 
         public async Task<IActionResult> AddEmojiAsync(EmojiDTO dto)
         {
@@ -17,6 +22,8 @@ namespace CloneTwiAPI.Services
                                messageId: dto.MessageId, entity: EmojiAutoMapper.ToEntity(dto));
 
             var savedEmoji = (EmojiMessage)((OkObjectResult)result).Value!;
+
+            await _hub.Clients.All.SendAsync("emojis", savedEmoji);
 
             return new OkObjectResult(EmojiAutoMapper.ToDto(savedEmoji));
         }
@@ -27,6 +34,8 @@ namespace CloneTwiAPI.Services
             if (emoji == null) return new NotFoundResult();
 
             var result = await RemoveAsync(entity: emoji);
+
+            await _hub.Clients.All.SendAsync("emojis", result);
 
             return new OkObjectResult(result);
         }

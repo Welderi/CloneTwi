@@ -1,25 +1,26 @@
 import {HubConnectionBuilder, HttpTransportType} from "@microsoft/signalr";
 
-const SignalRPost = (onNewPost) => {
+const SignalREmoji = (newEmoji) => {
     const connection = new HubConnectionBuilder()
-        .withUrl("http://localhost:5000/post", {
+        .withUrl("http://localhost:5000/emoji", {
             withCredentials: true,
             transport: HttpTransportType.WebSockets
         })
         .withAutomaticReconnect()
         .build();
 
-    connection.on("messages", (data) => {
-        console.log("Received new post:", data);
-        onNewPost(data);
+    connection.on("emojis", (data) => {
+        console.log("Recieved: ", data);
+        newEmoji(data);
     });
 
-    async function start() {
-        try {
+    async function start(){
+        try{
             await connection.start();
-            console.log("SignalR Connected.");
-        } catch (err) {
-            console.error("SignalR Connection Error:", err);
+            console.log("SignalR Emoji connected.");
+        }
+        catch (err){
+            console.log("SignalR error: ", err);
             setTimeout(start, 5000);
         }
     }
@@ -33,4 +34,4 @@ const SignalRPost = (onNewPost) => {
     return connection;
 };
 
-export default SignalRPost;
+export default SignalREmoji;

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import MessageCard from "../messageCard/messageCard";
 import {Link} from "react-router-dom";
-import SignalR from "../signalR/signalR";
+import SignalRPost from "../signalR/signalR";
 
 function Main() {
     const [messages, setMessages] = useState([]);
@@ -71,7 +71,7 @@ function Main() {
         fetchEmojis();
         fetchMessage();
 
-        const connection = SignalR((data) => {
+        const connection = SignalRPost((data) => {
             const newMessage = data.value;
             setMessages(prevMessages => {
                 if (newMessage.messageParentId == null) {
