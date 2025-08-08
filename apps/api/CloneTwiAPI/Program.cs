@@ -122,7 +122,6 @@ namespace CloneTwiAPI
             // HUBS
 
             app.MapHub<PostHub>("/post");
-            app.MapHub<EmojiHub>("/emojis");
 
             app.Run();
         }

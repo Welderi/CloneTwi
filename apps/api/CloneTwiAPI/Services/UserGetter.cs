@@ -28,9 +28,9 @@ namespace CloneTwiAPI.Services
             return user;
         }
 
-        public bool IsCurrentUser(string userId)
+        public List<ApplicationUser> GetAllUsers()
         {
-            return true ? userId == Convert.ToString(GetUser().Id) : false;
+            return _userManager.Users.ToList();
         }
     }
 }

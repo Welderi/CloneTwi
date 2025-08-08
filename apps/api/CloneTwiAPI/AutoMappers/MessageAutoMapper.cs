@@ -20,7 +20,7 @@ namespace CloneTwiAPI
             };
         }
 
-        public static MessageDTO ToDto(Message entity)
+        public static MessageDTO ToDto(Message entity, string? isCurrentUser = null)
         {
             return new MessageDTO
             {

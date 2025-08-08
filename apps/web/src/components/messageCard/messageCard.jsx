@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import Emoji from "./emojis/emoji";
 
-function MessageCard({ message, emojis = [] }){
+function MessageCard({ message, emoji, allEmojis }){
     const [arrowDown, setArrowDown] = useState(true);
     const [messageText, setMessageText] = useState("");
 
-    const changeArrowState = () => {
-        setArrowDown(prev => !prev);
-    }
+    const changeArrowState = () => { setArrowDown(prev => !prev); }
 
     const isVideoFile = (fileName) => {
         const videoExtensions = ['.mp4', '.webm', '.ogg', 'mov'];
@@ -74,14 +72,22 @@ function MessageCard({ message, emojis = [] }){
                 {arrowDown ? "↓ Show Replies" : "↑ Hide Replies"}
             </button>
 
-            {!arrowDown && message.parents && message.parents.map((msg, index) => (
-                <MessageCard key={`${msg.messageId}-${index}`} message={msg} />
-            ))}
+            {!arrowDown && message.parents && message.parents.map((msg, index) => {
+                const currentEmoji = allEmojis?.filter(e => e.messageId === msg.messageId) || [];
+                return (
+                    <MessageCard
+                        key={`${msg.messageId}-${index}`}
+                        message={msg}
+                        emoji={currentEmoji}
+                        allEmojis={allEmojis}
+                    />
+                );
+            })}
 
             <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
             <button onClick={addParentMessage}>Reply</button>
 
-            <Emoji emojis={emojis} message={message}/>
+            <Emoji emoji={emoji} message={message}/>
         </div>
     );
 }

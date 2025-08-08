@@ -23,7 +23,9 @@ namespace CloneTwiAPI.Services
 
             var savedMessage = (Message)((OkObjectResult)result).Value!;
 
-            var newDto = MessageAutoMapper.ToDto(savedMessage);
+            var currentUser = await _userGetter.GetUser();
+
+            var newDto = MessageAutoMapper.ToDto(savedMessage, currentUser?.Id);
 
             // Video | Image
 
@@ -47,7 +49,7 @@ namespace CloneTwiAPI.Services
                 await AddRangeAsync(videoEntities);
             }
 
-            await _hub.Clients.All.SendAsync("messages", savedMessage);
+            await _hub.Clients.All.SendAsync("messages", newDto);
 
             return new OkObjectResult(newDto);
         }
@@ -75,7 +77,9 @@ namespace CloneTwiAPI.Services
                 .Include(l => l.EmojiMessages)
                 .ToListAsync();
 
-            var dtos = entities.Select(MessageAutoMapper.ToDto).ToList();
+            var currentUser = await _userGetter.GetUser();
+
+            var dtos = entities.Select(e => MessageAutoMapper.ToDto(e, currentUser?.Id)).ToList();
 
             return new OkObjectResult(dtos);
         }
