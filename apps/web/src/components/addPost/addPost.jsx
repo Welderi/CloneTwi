@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import createMessageAsync from "../messageController/createMessage";
 
 function AddPost(){
     const [messageText, setMessageText] = useState("");
@@ -10,28 +11,15 @@ function AddPost(){
     };
 
     const createMessage = async () =>{
-        try{
-            const form = new FormData();
-            form.append("MessageText", messageText);
+        const messageForm = {
+            isParent: false,
+            messageText: messageText,
+            messageParentId: null,
+            videoImage: videoImage
+        };
 
-            if(videoImage){
-                for (let i = 0; i < videoImage.length; i++) {
-                    form.append("VideoMessages", videoImage[i]);
-                }
-            }
-
-            const response = await fetch("http://localhost:5000/api/message/addmessage", {
-                method: "POST",
-                credentials: "include",
-                body: form,
-            });
-
-            const result = await response.text();
-            setMessage(result);
-        }
-        catch (err){
-            console.error(err);
-        }
+        const result = await createMessageAsync(messageForm);
+        setMessage(result);
     };
 
     return(

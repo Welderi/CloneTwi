@@ -19,15 +19,14 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - sqlserver
-    command: dotnet watch run --urls=http://0.0.0.0:5000
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CloneTwi;User Id=sa;Password=1234567890Qwerty!;Encrypt=false;TrustServerCertificate=true;
     ports:
       - "5000:5000"
     volumes:
-      # - ./apps/api/CloneTwiAPI:/app
-      - ~/.nuget/packages:/root/.nuget/packages:ro
+      - ./apps/api/CloneTwiAPI:/app
+      # - ~/.nuget/packages:/root/.nuget/packages:ro
       # - ./apps/api/CloneTwiAPI:/app
       # - /app/obj
       # - /app/bin

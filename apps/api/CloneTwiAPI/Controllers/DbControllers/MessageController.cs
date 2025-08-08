@@ -17,25 +17,11 @@ namespace CloneTwiAPI.Controllers.DbControllers
         }
 
         [Authorize]
-        [HttpPost("addmessage")]
-        public async Task<IActionResult> AddAsync([FromForm] MessageDTO dto)
+        [HttpPost("addmessage/{isParent}")]
+        public async Task<IActionResult> AddAsync([FromForm] MessageDTO dto, [FromRoute] bool isParent)
         {
-            return await _service.AddMessageAsync(dto);
+            return await _service.AddMessageAsync(dto, isParent);
         }
-
-        [Authorize]
-        [HttpPost("addparentmessage")]
-        public async Task<IActionResult> AddParentAsync([FromBody] MessageDTO dto)
-        {
-            return await _service.AddParentAsync(dto);
-        }
-
-        //[Authorize]
-        //[HttpDelete("removemessage")]
-        //public async Task<bool> RemoveAsync([FromBody] MessageDTO dto)
-        //{
-        //    return await _service.RemoveAsync(dto);
-        //}
 
         [Authorize]
         [HttpGet("getgroupedmessages")]

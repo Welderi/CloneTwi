@@ -2,10 +2,9 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 WORKDIR /app
 
-COPY . ./
+EXPOSE 5000
 
+COPY . /app
 RUN dotnet restore
 
-RUN dotnet build
-
-CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:5000"]
+ENTRYPOINT ["dotnet", "watch", "run",  "--urls", "http://*:5000"]

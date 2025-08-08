@@ -12,9 +12,9 @@ const normalizeParents = (msgs) =>
 const addReply = (msgs, newMsg) =>
     msgs.map(msg =>
         msg.messageId === newMsg.messageParentId
-            ? { ...msg, parents: [newMsg, ...(msg.parents || [])] }
+            ? {...msg, parents: [newMsg, ...(msg.parents || [])]}
             : msg.parents?.length
-                ? { ...msg, parents: addReply(msg.parents, newMsg) }
+                ? {...msg, parents: addReply(msg.parents, newMsg)}
                 : msg
     );
 
@@ -55,13 +55,14 @@ function Main() {
         fetchMessages();
         fetchEmojis();
 
-        const connection = SignalRPost((data) => {
-            const newMessage = data.value;
-            setMessages(prev =>
-                newMessage.messageParentId == null
+        const connection = SignalRPost();
+
+        connection.on("messages", (newMessage) => {
+            setMessages(prev => {
+                return newMessage.messageParentId === null
                     ? [newMessage, ...prev]
-                    : addReply(prev, newMessage)
-            );
+                    : addReply(prev, newMessage);
+            });
         });
 
         connection.on("updateEmojiForMessage", (messageId, emojiData) => {

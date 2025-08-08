@@ -1,9 +1,11 @@
 import React, {useState} from "react";
 import Emoji from "./emojis/emoji";
+import createMessageAsync from "../messageController/createMessage";
 
 function MessageCard({ message, emoji, allEmojis }){
     const [arrowDown, setArrowDown] = useState(true);
     const [messageText, setMessageText] = useState("");
+    const [videoImage, setVideoImage] = useState(null);
 
     const changeArrowState = () => { setArrowDown(prev => !prev); }
 
@@ -12,24 +14,21 @@ function MessageCard({ message, emoji, allEmojis }){
         return videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
     };
 
+    const addFile = (e) => {
+        setVideoImage(Array.from(e.target.files));
+    };
+
     const addParentMessage = async () =>{
-        try {
-            await fetch("http://localhost:5000/api/message/addparentmessage", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    MessageText: messageText,
-                    MessageParentId: message.messageId
-                })
-            });
-            setMessageText("");
-        }
-        catch (err){
-            console.error(err);
-        }
+        const messageForm = {
+            isParent: true,
+            messageText: messageText,
+            messageParentId: message.messageId,
+            videoImage: videoImage
+        };
+
+        await createMessageAsync(messageForm);
+        setMessageText("");
+        setVideoImage(null);
     }
 
     return(
@@ -85,6 +84,7 @@ function MessageCard({ message, emoji, allEmojis }){
             })}
 
             <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
+            <input type="file" onChange={addFile} accept="image/*,video/*" multiple />
             <button onClick={addParentMessage}>Reply</button>
 
             <Emoji emoji={emoji} message={message}/>

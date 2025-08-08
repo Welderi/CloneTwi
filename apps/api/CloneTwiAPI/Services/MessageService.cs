@@ -3,7 +3,6 @@ using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {
@@ -16,19 +15,8 @@ namespace CloneTwiAPI.Services
             _hub = hub;
         }
 
-        public async Task<IActionResult> AddMessageAsync(MessageDTO dto)
+        private async Task AddVideoOrImage(MessageDTO dto, Message message)
         {
-            var message = await MessageAutoMapper.ToEntity(dto);
-            var result = await AddAsync(dto, userBool: true, entity: message);
-
-            var savedMessage = (Message)((OkObjectResult)result).Value!;
-
-            var currentUser = await _userGetter.GetUser();
-
-            var newDto = MessageAutoMapper.ToDto(savedMessage, currentUser?.Id);
-
-            // Video | Image
-
             if (dto.VideoMessages != null)
             {
                 var videoEntities = new List<VideoMessage>();
@@ -48,22 +36,30 @@ namespace CloneTwiAPI.Services
 
                 await AddRangeAsync(videoEntities);
             }
+        }
+
+        public async Task<IActionResult> AddMessageAsync(MessageDTO dto, bool isParent)
+        {
+            var message = await MessageAutoMapper.ToEntity(dto);
+            IActionResult? result = null;
+
+            if (isParent)
+                result = await AddAsync(dto, userBool: true, messageId: dto.MessageParentId, entity: message);
+            else
+                result = await AddAsync(dto, userBool: true, entity: message);
+
+            var savedMessage = (Message)((OkObjectResult)result).Value!;
+
+            // Video | Image
+
+            await AddVideoOrImage(dto, savedMessage);
+
+            var newDto = MessageAutoMapper.ToDto(savedMessage);
 
             await _hub.Clients.All.SendAsync("messages", newDto);
 
             return new OkObjectResult(newDto);
         }
-
-        public async Task<IActionResult> AddParentAsync(MessageDTO dto)
-        {
-            var result = await AddAsync(dto, userBool: true, messageId: dto.MessageParentId,
-                                        entity: await MessageAutoMapper.ToEntity(dto));
-
-            await _hub.Clients.All.SendAsync("messages", result);
-
-            return new OkObjectResult(result);
-        }
-
         public async Task<bool> RemoveMessageAsync(MessageDTO dto)
         {
             return await RemoveAsync(entity: await MessageAutoMapper.ToEntity(dto));
@@ -79,7 +75,7 @@ namespace CloneTwiAPI.Services
 
             var currentUser = await _userGetter.GetUser();
 
-            var dtos = entities.Select(e => MessageAutoMapper.ToDto(e, currentUser?.Id)).ToList();
+            var dtos = entities.Select(MessageAutoMapper.ToDto).ToList();
 
             return new OkObjectResult(dtos);
         }
