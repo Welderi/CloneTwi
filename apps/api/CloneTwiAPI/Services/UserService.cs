@@ -116,5 +116,20 @@ namespace CloneTwiAPI.Services
                 user.Title
             });
         }
+
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var currentUser = await _userGetter.GetUser();
+
+            var users = _userGetter.GetAllUsers().Where(u => u.Id != currentUser!.Id)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.UserName,
+                    u.ProfileImageUrl
+                });
+
+            return new OkObjectResult(users);
+        }
     }
 }

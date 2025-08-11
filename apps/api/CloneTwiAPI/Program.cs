@@ -103,6 +103,8 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<UserGetter>();
             builder.Services.AddScoped<MessageService>();
             builder.Services.AddScoped<EmojiService>();
+            builder.Services.AddScoped<FollowService>();
+
             builder.Services.AddScoped(typeof(GenericService<,>));
 
             builder.Services.AddControllers();
@@ -122,6 +124,7 @@ namespace CloneTwiAPI
             // HUBS
 
             app.MapHub<PostHub>("/post");
+            app.MapHub<FollowHub>("/user");
 
             app.Run();
         }

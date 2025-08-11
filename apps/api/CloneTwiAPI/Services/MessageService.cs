@@ -3,6 +3,7 @@ using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {

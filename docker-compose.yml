@@ -25,12 +25,9 @@ services:
     ports:
       - "5000:5000"
     volumes:
+      # - ~/.nuget/packages:/root/.nuget/packages
       - ./apps/api/CloneTwiAPI:/app
-      # - ~/.nuget/packages:/root/.nuget/packages:ro
-      # - ./apps/api/CloneTwiAPI:/app
-      # - /app/obj
-      # - /app/bin
-
+      
   web:
     build:
       context: ./apps/web

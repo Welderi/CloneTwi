@@ -99,6 +99,9 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.ToTable("FollowUser");
 
+            entity.Property(e => e.FollowerUserId).HasColumnName("Follower_UserId");
+            entity.Property(e => e.FollowingUserId).HasColumnName("Following_UserId");
+
             entity.HasOne(f => f.Follower)
                   .WithMany(u => u.Following)
                   .HasForeignKey(f => f.FollowerUserId)

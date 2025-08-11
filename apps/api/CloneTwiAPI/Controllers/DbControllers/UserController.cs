@@ -57,5 +57,9 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [Authorize]
         [HttpGet("getuserinfo")]
         public async Task<IActionResult?> GetInfo() => await _service.GetInfo();
+
+        [Authorize]
+        [HttpGet("getallusers")]
+        public async Task<IActionResult> GetAllUsers() => await _service.GetAllUsers();
     }
 }

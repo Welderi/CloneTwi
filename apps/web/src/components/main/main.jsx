@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MessageCard from "../messageCard/messageCard";
 import SignalRPost from "../signalR/signalR";
+import UserCard from "../userCard/userCard";
 
 const normalizeParents = (msgs) =>
     msgs.map(msg => ({
@@ -27,33 +28,44 @@ const updateMessageEmojis = (messages, messageId, emojisData) =>
                 : msg
     );
 
+const fetchMethod = async (url) => {
+    try {
+        const res = await fetch(url, {credentials: "include"});
+        return await res.json();
+    } catch (err){
+        console.error("Error fetching:", err);
+        return null;
+    }
+};
+
 function Main() {
     const [messages, setMessages] = useState([]);
     const [emojis, setEmojis] = useState([]);
+    const [users, setUsers] = useState([]);
 
     const fetchMessages = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/api/message/getgroupedmessages", { credentials: "include" });
-            const data = await res.json();
-            setMessages(normalizeParents(data));
-        } catch (err) {
-            console.error("Error fetching messages:", err);
-        }
+        const data = await fetchMethod("http://localhost:5000/api/message/getgroupedmessages");
+        if (data) setMessages(normalizeParents(data));
     };
 
     const fetchEmojis = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/api/emoji/allemojisforuser", { credentials: "include" });
-            const data = await res.json();
-            setEmojis(data);
-        } catch (err) {
-            console.error("Error fetching emojis:", err);
-        }
+        const data = await fetchMethod("http://localhost:5000/api/emoji/allemojisforuser");
+        if (data) setEmojis(data);
+    };
+
+    const fetchUsers = async () => {
+        const data = await fetchMethod("http://localhost:5000/api/user/getallusers");
+        if (data) setUsers(data);
     };
 
     useEffect(() => {
-        fetchMessages();
-        fetchEmojis();
+        const fetchAll = async () => {
+            await fetchMessages();
+            await fetchEmojis();
+            await fetchUsers();
+        };
+
+        fetchAll();
 
         const connection = SignalRPost();
 
@@ -88,6 +100,14 @@ function Main() {
                 <Link to="/userProfile">Profile</Link>
                 <Link to="/additionalUserSettings">Settings</Link>
             </nav>
+
+            <h2>Users: </h2>
+
+            {users
+                .map(user => (
+                    <UserCard key={user.id} user={user}/>
+                ))
+            }
 
             <h2>Messages:</h2>
             {messages
