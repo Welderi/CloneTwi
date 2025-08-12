@@ -1,14 +1,16 @@
 import React, {useState, useEffect, use} from "react";
 import MessageCard from "../messageCard/messageCard";
 import ControlMessages from "../messageController/controlMessages";
+import {useParams} from "react-router-dom";
 
 function UserProfile(){
     const [userInfo, setUserInfo] = useState(null);
+    const { userId } = useParams();
 
     useEffect(() => {
         const getInfo = async () => {
             try{
-                const response = await fetch("http://localhost:5000/api/user/getuserinfo", {
+                const response = await fetch(`http://localhost:5000/api/user/getuserinfo/${userId || ""}`, {
                     method: "GET",
                     credentials: "include"
                 });

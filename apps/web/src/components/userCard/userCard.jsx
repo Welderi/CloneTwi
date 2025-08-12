@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import SignalRUser from "../signalR/signalRUser";
+import {Link} from "react-router-dom";
 
 function UserCard({ user }){
     const [isFollowed, setIsFollowed] = useState(false);
@@ -88,6 +89,8 @@ function UserCard({ user }){
             <img src={user.profileImageUrl} alt=""/>
             <p>{user.userName}</p>
             <p>{countFollowers}</p>
+
+            <Link to={`/userProfile/${user.id}`}>Profile</Link>
 
             <button onClick={handleFollowClick}>{isFollowed ? "Unfollow" : "Follow"}</button>
         </div>

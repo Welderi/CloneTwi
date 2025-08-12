@@ -16,7 +16,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/changePassword" element={<ChangePassword />} />
-                <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/userProfile/:userId?" element={<UserProfile />} />
                 <Route path="/additionalUserSettings" element={<AdditionalUserSettings />} />
             </Routes>
         </BrowserRouter>

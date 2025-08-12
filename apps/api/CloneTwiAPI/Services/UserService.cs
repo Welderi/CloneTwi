@@ -103,9 +103,14 @@ namespace CloneTwiAPI.Services
             return new OkObjectResult("You have everything added");
         }
 
-        public async Task<IActionResult?> GetInfo()
+        public async Task<IActionResult?> GetInfo(string? userId)
         {
-            var user = await _userGetter.GetUser();
+            ApplicationUser? user = null;
+
+            if (!string.IsNullOrEmpty(userId))
+                user = await _userManager.FindByIdAsync(userId);
+            else
+                user = await _userGetter.GetUser();
 
             return new OkObjectResult(new
             {
