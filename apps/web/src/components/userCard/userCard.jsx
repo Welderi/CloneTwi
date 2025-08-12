@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import SignalRUser from "../signalR/signalRUser";
 
 function UserCard({ user }){
     const [isFollowed, setIsFollowed] = useState(false);
+    const [countFollowers, setCountFollowers] = useState(0);
 
     const followOrUnfollow = async (url) => {
         try {
@@ -29,34 +31,63 @@ function UserCard({ user }){
     };
 
     useEffect(() => {
+        const getCountofFollowers = async () => {
+            try{
+                const res = await fetch(`http://localhost:5000/api/follow/getcountoffollowers/${user.id}`, {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                const data = await res.json();
+
+                setCountFollowers(data.followersCount ?? data);
+            } catch (err){
+                console.log("Count of followers error: ", err);
+            }
+        };
+
+        getCountofFollowers();
+    }, [user.id]);
+
+    useEffect(() => {
         const fetchIsFollowed = async () => {
             try{
                 const res = await fetch(`http://localhost:5000/api/follow/getisfollowed/${user.id}`, {
                     method: "GET",
                     credentials: "include"
                 });
+
                 const data = await res.json();
-                console.log("Data: ", data);
+
                 setIsFollowed(data);
             } catch (err){
                 console.log("IsFollow Error: ", err)
             }
         };
-        
+
         fetchIsFollowed();
+
+        const connection = SignalRUser();
+
+        connection.on("follow", (data) => {
+            if (data.followersCount !== undefined) {
+                setCountFollowers(data.followersCount);
+            }
+        });
+
+        return () => connection.stop();
     }, [user.id])
 
     const handleFollowClick = () => {
-        if(isFollowed)
-            unfollow();
-        else
-            follow();
+        if(isFollowed) unfollow();
+        else follow();
     };
 
     return(
         <div>
             <img src={user.profileImageUrl} alt=""/>
             <p>{user.userName}</p>
+            <p>{countFollowers}</p>
 
             <button onClick={handleFollowClick}>{isFollowed ? "Unfollow" : "Follow"}</button>
         </div>

@@ -65,14 +65,14 @@ namespace CloneTwiAPI.Services
         {
             return await RemoveAsync(entity: await MessageAutoMapper.ToEntity(dto));
         }
-
         public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync()
         {
             var entities = await _context.Set<Message>()
-                .Include(m => m.InverseMessageParent)
-                .Include(vm => vm.VideoMessages)
-                .Include(l => l.EmojiMessages)
-                .ToListAsync();
+                                         .AsNoTracking()
+                                         .Include(m => m.InverseMessageParent)
+                                         .Include(vm => vm.VideoMessages)
+                                         .Include(l => l.EmojiMessages)
+                                         .ToListAsync();
 
             var currentUser = await _userGetter.GetUser();
 

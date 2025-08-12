@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 
 function UserProfile(){
     const [userInfo, setUserInfo] = useState(null);
-    // const [error, setError] = useState("");
 
     useEffect(() => {
         const getInfo = async () => {

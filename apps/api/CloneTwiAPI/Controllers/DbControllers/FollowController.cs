@@ -26,5 +26,9 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [Authorize]
         [HttpGet("getisfollowed/{userId}")]
         public async Task<IActionResult> IsFollowed([FromRoute] string userId) => await _service.IsFollowed(userId);
+
+        [Authorize]
+        [HttpGet("getcountoffollowers/{userId?}")]
+        public async Task<int> GetCountofFollowers([FromRoute] string? userId) => await _service.GetCountofFollowers(userId);
     }
 }

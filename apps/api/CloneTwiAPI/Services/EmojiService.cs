@@ -20,18 +20,19 @@ namespace CloneTwiAPI.Services
         private async Task<object> GetUserEmojisForMessage(int messageId, string? userId)
         {
             var message = await _context.Messages
-                .Include(m => m.EmojiMessages)
-                .FirstOrDefaultAsync(m => m.MessageId == messageId);
+                                        .Include(m => m.EmojiMessages)
+                                        .FirstOrDefaultAsync(m => m.MessageId == messageId);
 
             var emojis = message.EmojiMessages
-                .GroupBy(e => e.EmojiValue)
-                .ToDictionary(g => g.Key, g => g.Count());
+                                .GroupBy(e => e.EmojiValue)
+                                .ToDictionary(g => g.Key, g => g.Count());
 
             object? userEmoji = null;
+
             if (!string.IsNullOrEmpty(userId))
             {
                 var found = message.EmojiMessages
-                    .FirstOrDefault(e => e.EmojiUserId == userId);
+                                   .FirstOrDefault(e => e.EmojiUserId == userId);
 
                 if (found != null)
                 {
@@ -59,15 +60,17 @@ namespace CloneTwiAPI.Services
             foreach (var userId in allUsers)
             {
                 var data = await GetUserEmojisForMessage(messageId, userId);
+
                 await _hub.Clients.User(userId)
-                    .SendAsync("updateEmojiForMessage", messageId, data);
+                                  .SendAsync("updateEmojiForMessage", messageId, data);
             }
         }
 
         public async Task<IActionResult> AddEmojiAsync(EmojiDTO dto)
         {
             var result = await AddAsync(model: null, userBool: true,
-                               messageId: dto.MessageId, entity: EmojiAutoMapper.ToEntity(dto));
+                                        messageId: dto.MessageId,
+                                        entity: EmojiAutoMapper.ToEntity(dto));
 
             var savedEmoji = (EmojiMessage)((OkObjectResult)result).Value!;
 
@@ -95,9 +98,10 @@ namespace CloneTwiAPI.Services
             var user = await _userGetter.GetUser();
 
             var result = _context.EmojiMessages
-                .Where(u => u.EmojiUserId == user!.Id)
-                .ToList()
-                .Select(EmojiAutoMapper.ToDto);
+                                 .AsNoTracking()
+                                 .Where(u => u.EmojiUserId == user!.Id)
+                                 .ToList()
+                                 .Select(EmojiAutoMapper.ToDto);
 
             return result;
         }

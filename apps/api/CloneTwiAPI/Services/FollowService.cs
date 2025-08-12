@@ -9,57 +9,81 @@ namespace CloneTwiAPI.Services
     public class FollowService
     {
         private readonly CloneTwiContext _context;
-        private readonly UserGetter _userGetter;
+        private readonly ApplicationUser _currentUser;
         private readonly IHubContext<FollowHub> _hub;
 
         public FollowService(CloneTwiContext context, UserGetter userGetter, IHubContext<FollowHub> hub)
         {
             _context = context;
-            _userGetter = userGetter;
             _hub = hub;
+
+            _currentUser = userGetter.GetUser().GetAwaiter().GetResult()!;
         }
 
         public async Task<IActionResult> FollowOrUnfollow(string userId, bool isFollow)
         {
-            var currentUser = await _userGetter.GetUser();
-            var followedUser = await _userGetter.GetUserById(userId);
-
-            var followEntity = new FollowUser
-            {
-                Follower = currentUser!,
-                Following = followedUser
-            };
+            var followedUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (isFollow)
+            {
+                var followEntity = new FollowUser
+                {
+                    Follower = _currentUser,
+                    Following = followedUser!
+                };
+
                 await _context.FollowUsers.AddAsync(followEntity);
+            }
             else
             {
                 var existingFollow = await _context.FollowUsers
-                    .FirstOrDefaultAsync(f => f.Follower == currentUser && f.Following == followedUser);
+                                                   .FirstOrDefaultAsync(f =>
+                                                   f.FollowerUserId == _currentUser.Id &&
+                                                   f.FollowingUserId == followedUser!.Id);
+
                 if (existingFollow != null)
-                {
                     _context.FollowUsers.Remove(existingFollow);
-                }
             }
 
             await _context.SaveChangesAsync();
 
-            await _hub.Clients.Users(new[] { currentUser!.Id, userId }).SendAsync("followmessage");
+            var count = await GetCountofFollowers(followedUser.Id);
+
+            var userData = new
+            {
+                FollowerUserId = _currentUser.Id,
+                FollowerUserName = _currentUser.UserName,
+                FollowingUserId = followedUser.Id,
+                FollowingUserName = followedUser.UserName,
+                FollowersCount = count
+            };
+
+            await _hub.Clients.Users(_currentUser.Id).SendAsync("follow", userData);
+
+            await _hub.Clients.Users(followedUser.Id).SendAsync("newfollower", userData);
 
             return new OkObjectResult(true);
         }
 
         public async Task<IActionResult> IsFollowed(string userId)
         {
-            var currentUser = await _userGetter.GetUser();
-            var followedUser = await _userGetter.GetUserById(userId);
-
-            var isFollowed = await _context.FollowUsers.AnyAsync(u =>
-                u.FollowerUserId == currentUser!.Id && u.FollowingUserId == userId);
-
-            Console.WriteLine($"+===============d {isFollowed} ++++++++++");
+            var isFollowed = await _context.FollowUsers
+                                           .AsNoTracking()
+                                           .AnyAsync(u =>
+                                           u.FollowerUserId == _currentUser.Id &&
+                                           u.FollowingUserId == userId);
 
             return new OkObjectResult(isFollowed);
+        }
+
+        public async Task<int> GetCountofFollowers(string? userId = null)
+        {
+            if (userId == null)
+                userId = _currentUser.Id;
+
+            return await _context.FollowUsers
+                                      .AsNoTracking()
+                                      .CountAsync(u => u.FollowingUserId == userId);
         }
     }
 }
