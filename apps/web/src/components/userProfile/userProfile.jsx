@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, use} from "react";
+import MessageCard from "../messageCard/messageCard";
+import ControlMessages from "../messageController/controlMessages";
 
 function UserProfile(){
     const [userInfo, setUserInfo] = useState(null);
@@ -18,6 +20,7 @@ function UserProfile(){
 
                 const data = await response.json();
                 setUserInfo(data);
+
             }
             catch (err){
                 console.error(err);
@@ -26,6 +29,8 @@ function UserProfile(){
 
         getInfo();
     }, [])
+
+    const { messages, emojis } = ControlMessages(userInfo?.id);
 
     return(
       <div>
@@ -47,6 +52,17 @@ function UserProfile(){
                   )}
               </>
           )}
+          <h2>Messages:</h2>
+          {messages
+              .filter(msg => msg.messageParentId === null)
+              .map(msg => (
+                  <MessageCard
+                      key={msg.messageId}
+                      message={msg}
+                      emoji={emojis.filter(e => e.messageId === msg.messageId)}
+                      allEmojis={emojis}
+                  />
+              ))}
       </div>
     );
 }

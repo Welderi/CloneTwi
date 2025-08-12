@@ -109,7 +109,8 @@ namespace CloneTwiAPI.Services
 
             return new OkObjectResult(new
             {
-                user!.UserName,
+                user!.Id,
+                user.UserName,
                 user.Email,
                 user.Bio,
                 user.ProfileImageUrl,

@@ -19,15 +19,11 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [Authorize]
         [HttpPost("addmessage/{isParent}")]
         public async Task<IActionResult> AddAsync([FromForm] MessageDTO dto, [FromRoute] bool isParent)
-        {
-            return await _service.AddMessageAsync(dto, isParent);
-        }
+        => await _service.AddMessageAsync(dto, isParent);
 
         [Authorize]
-        [HttpGet("getgroupedmessages")]
-        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync()
-        {
-            return await _service.GetGroupedMessagesAsync();
-        }
+        [HttpGet("getgroupedmessages/{userId?}")]
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetGroupedMessagesAsync([FromRoute] string? userId)
+        => await _service.GetGroupedMessagesAsync(userId);
     }
 }
