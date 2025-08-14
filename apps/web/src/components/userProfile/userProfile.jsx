@@ -1,4 +1,4 @@
-import React, {useState, useEffect, use} from "react";
+import React, {useState, useEffect} from "react";
 import MessageCard from "../messageCard/messageCard";
 import ControlMessages from "../messageController/controlMessages";
 import {useParams} from "react-router-dom";
@@ -30,7 +30,7 @@ function UserProfile(){
         };
 
         getInfo();
-    }, [])
+    }, [userId])
 
     const { messages, emojis } = ControlMessages(userInfo?.id);
 

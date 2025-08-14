@@ -39,6 +39,27 @@ namespace CloneTwiAPI.Services
             }
         }
 
+        public async Task AddTheme(MessageDTO dto, Message message)
+        {
+            if (dto.Themes != null)
+            {
+                var themeEntities = new List<ThemeMessage>();
+
+                foreach (var theme in dto.Themes)
+                {
+                    var themeEntity = new ThemeMessage
+                    {
+                        ThemeType = theme,
+                        ThemeMessageId = message.MessageId
+                    };
+
+                    themeEntities.Add(themeEntity);
+                }
+
+                await AddRangeAsync(themeEntities);
+            }
+        }
+
         public async Task<IActionResult> AddMessageAsync(MessageDTO dto, bool isParent)
         {
             var message = await MessageAutoMapper.ToEntity(dto);
@@ -54,6 +75,10 @@ namespace CloneTwiAPI.Services
             // Video | Image
 
             await AddVideoOrImage(dto, savedMessage);
+
+            // Themes
+
+            await AddTheme(dto, savedMessage);
 
             var newDto = MessageAutoMapper.ToDto(savedMessage);
 
@@ -72,6 +97,7 @@ namespace CloneTwiAPI.Services
                                 .Include(m => m.InverseMessageParent)
                                 .Include(vm => vm.VideoMessages)
                                 .Include(l => l.EmojiMessages)
+                                .Include(t => t.ThemeMessages)
                                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(userId))

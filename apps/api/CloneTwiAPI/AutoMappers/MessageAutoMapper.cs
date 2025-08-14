@@ -34,7 +34,8 @@ namespace CloneTwiAPI
                 VideoMessagesTo = entity.VideoMessages.Select(e => e.VideoFile).ToList(),
                 Emojis = entity.EmojiMessages
                               .GroupBy(e => e.EmojiValue)
-                              .ToDictionary(g => g.Key, g => g.Count())
+                              .ToDictionary(g => g.Key, g => g.Count()),
+                Themes = entity.ThemeMessages.Select(t => t.ThemeType).ToList()
             };
         }
     }

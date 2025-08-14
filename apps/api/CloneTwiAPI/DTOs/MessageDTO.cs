@@ -13,6 +13,7 @@
 
         // To Client
         public List<string>? VideoMessagesTo { get; set; }
+        public List<string>? Themes { get; set; }
         public Dictionary<string, int>? Emojis { get; set; }
     }
 }

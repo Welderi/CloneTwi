@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import GetMessages from "../messageController/getMessages";
 import fetchMethodGet from "../fetchMethods/fetchMethodGet";
 import SignalRPost from "../signalR/signalR";
-import MessageCard from "../messageCard/messageCard";
 
 const addReply = (msgs, newMsg) =>
     msgs.map(msg =>

@@ -15,6 +15,12 @@ const createMessageAsync = async (message) => {
             }
         }
 
+        if(message.themes){
+            for (let i = 0; i < message.themes.length; i++) {
+                form.append("Themes", message.themes[i]);
+            }
+        }
+
         const url = "http://localhost:5000/api/message/addmessage/" + (message.isParent ? "true" : "false");
 
         const response = await fetch(url, {

@@ -83,6 +83,16 @@ function MessageCard({ message, emoji, allEmojis }){
                 );
             })}
 
+            <p>Themes: </p>
+
+            {message.themes && message.themes.map((theme, index) => {
+                return(
+                    <div key={index}>
+                        <p key={index}># {theme}</p>
+                    </div>
+                );
+            })}
+
             <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
             <input type="file" onChange={addFile} accept="image/*,video/*" multiple />
             <button onClick={addParentMessage}>Reply</button>
