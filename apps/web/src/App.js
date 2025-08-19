@@ -6,12 +6,14 @@ import Register from "./components/register/register";
 import ChangePassword from "./components/changePassword/changePassword";
 import UserProfile from "./components/userProfile/userProfile";
 import AdditionalUserSettings from "./components/additionalUserSettings/additionalUserSettings";
+import FirstPage from "./components/firstPage/firstPage";
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Main />} />
+                <Route path="/" element={<FirstPage />} />
+                <Route path="/main" element={<Main/>}/>
                 <Route path="/addPost" element={<AddPost />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

@@ -1,0 +1,133 @@
+.logo {
+    width: 150px;
+    height: auto;
+    margin: 40px;
+}
+
+.div{
+    background-color: rgba(248, 248, 248, 1);
+    overflow: hidden;
+}
+
+.mainDiv{
+    justify-content: space-around;
+    margin: 0px 40px 0px 40px;
+    display: flex;
+    height: 140vh;
+}
+
+.balls{
+    position: relative;
+    z-index: 0;
+}
+
+.ballsWrapper {
+    position: absolute;
+    top: 0;
+    left: -30vh;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mainText{
+    margin: 10vh 0 0 20vh;
+}
+
+h1{
+    color: #3E74B7;
+    font-size: 36px;
+    font-family: "Oxygen", sans-serif;
+    font-weight: bold;
+}
+
+.blueText{
+    color: #3E74B7;
+}
+
+.absoluteBlueP{
+    font-size: 20px;
+    position: absolute;
+    top: 35%;
+    left: 30%;
+    pointer-events: none;
+}
+
+.absoluteP{
+    position: absolute;
+    font-size: 14px;
+    top:60%;
+    left: 30%;
+}
+
+.sticker{
+    width: 608px;
+    height: auto;
+}
+
+p{
+    font-size: 24px;
+}
+
+.trWindow{
+    position: relative;
+    width: 531px;
+    height: 100%;
+    display: flex;
+
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+    z-index: 2;
+    border-radius: 40px;
+    backdrop-filter: blur(21px);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.loginBtn{
+    margin-top: 30px;
+    border-radius: 15px;
+    border: 0;
+    padding: 5px 0;
+    width: 421px;
+    background-color: rgba(62, 116, 183, 1);
+    color: rgba(248, 248, 248, 1);
+    font-family: "Oxygen", sans-serif;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+.loginBtn:hover {
+    background-color: transparent;
+    backdrop-filter: blur(21px);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    color: black;
+    transform: scale(1.05);
+}
+
+.registerBtn{
+    font-family: "Oxygen", sans-serif;
+    border-radius: 15px;
+    background-color: rgba(62, 116, 183, 0.2);
+    backdrop-filter: blur(21px);
+    padding: 10px 0;
+    width: 217px;
+    border: 0;
+    transition: all 0.3s ease;
+}
+
+.registerBtn:hover{
+    background-color: rgba(247, 200, 115, 1);
+    transform: scale(1.05);
+}
+
+h2{
+    margin-top: 30vh;
+    font-family: "Oxygen", sans-serif;
+    font-weight: bolder;
+}
+
+.stickerDiv{
+    margin: -10vh -10vh 0 0;
+    position: relative;
+    display: inline-block;
+}
