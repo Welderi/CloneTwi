@@ -1,0 +1,30 @@
+.h1{
+    margin: 0 0 0 20vh;
+}
+
+.mainDiv{
+    margin: 0px 40px 0px 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+.registerBtn{
+    height: 42px;
+    width: 507px;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.trWindow{
+    height: 556px;
+    width: 881px;
+    margin: 10vh 0 0 0;
+    gap: 25px;
+    justify-content: center;
+}
+
+.ballsWrapper{
+    position: absolute;
+    left: 6vh;
+    margin-top: 170px;
+}

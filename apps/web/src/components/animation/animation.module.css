@@ -1,6 +1,5 @@
 .orbsContainer{
     position: relative;
-    margin-top: -100px;
     width: 100%;
     height: 100%;
 }
@@ -8,13 +7,8 @@
 .orb {
     position: absolute;
     will-change: transform;
-    --x1: 0;
-    --x2: 0;
-    --x3: 0;
-    --y1: 0;
-    --y2: 0;
-    --y3: 0;
     animation: moveAlong 10s infinite;
+    animation-fill-mode: both;
 }
 
 @keyframes moveAlong {
