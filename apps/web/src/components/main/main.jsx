@@ -20,7 +20,15 @@ function Main() {
 
         return [
             ...(users?.map(u => ({ label: u.userName, value: u.userName, type: "user" })) || []),
-            ...(messages?.map(m => ({ label: m.messageText, value: m.messageText, type: "message" })) || []),
+
+            ...(messages
+                ?.filter(m => m.messageParentId === null && m.messageText?.trim())
+                .map(m => ({
+                    label: m.messageText,
+                    value: m.messageText,
+                    type: "message"
+                })) || []),
+            
             ...themes
         ];
     }, [users, messages]);
