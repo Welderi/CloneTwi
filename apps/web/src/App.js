@@ -7,6 +7,7 @@ import ChangePassword from "./components/changePassword/changePassword";
 import UserProfile from "./components/userProfile/userProfile";
 import AdditionalUserSettings from "./components/additionalUserSettings/additionalUserSettings";
 import FirstPage from "./components/firstPage/firstPage";
+import Bookmarks from "./components/bookmarks/bookmarks";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/main" element={<Main/>}/>
                 <Route path="/addPost" element={<AddPost />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/bookmarks" element={<Bookmarks/>}/>
                 <Route path="/register" element={<Register />} />
                 <Route path="/changePassword" element={<ChangePassword />} />
                 <Route path="/userProfile/:userId?" element={<UserProfile />} />

@@ -25,6 +25,7 @@ function ControlMessages(userId = null){
     const [messages, setMessages] = useState([]);
     const [emojis, setEmojis] = useState([]);
     const [users, setUsers] = useState([]);
+    const [bookmarks, setBookmarks] = useState([]);
 
     const fetchMessages = async () => {
         const data = await GetMessages(userId);
@@ -41,11 +42,17 @@ function ControlMessages(userId = null){
         if (data) setUsers(data);
     };
 
+    const fetchBookmarks = async () => {
+        const data = await fetchMethodGet("http://localhost:5000/api/bookmark/getallbookmarksforuser");
+        if (data) setBookmarks(data);
+    };
+
     useEffect(() => {
         const fetchAll = async () => {
             await fetchMessages();
             await fetchEmojis();
             await fetchUsers();
+            await fetchBookmarks();
         };
 
         fetchAll();
@@ -75,7 +82,7 @@ function ControlMessages(userId = null){
         };
     }, [userId]);
 
-    return {messages, emojis, users};
+    return {messages, emojis, users, bookmarks};
 }
 
 export default ControlMessages;

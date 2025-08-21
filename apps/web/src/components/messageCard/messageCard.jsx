@@ -1,13 +1,18 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Emoji from "./emojis/emoji";
 import createMessageAsync from "../messageController/createMessage";
 
-function MessageCard({ message, emoji, allEmojis }){
+function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
     const [arrowDown, setArrowDown] = useState(true);
     const [messageText, setMessageText] = useState("");
     const [videoImage, setVideoImage] = useState(null);
+    const [bookmark, setBookmark] = useState(bookmarkBool);
 
     const changeArrowState = () => { setArrowDown(prev => !prev); }
+
+    useEffect(() => {
+        setBookmark(bookmarkBool);
+    }, [bookmarkBool]);
 
     const isVideoFile = (fileName) => {
         const videoExtensions = ['.mp4', '.webm', '.ogg', 'mov'];
@@ -16,6 +21,30 @@ function MessageCard({ message, emoji, allEmojis }){
 
     const addFile = (e) => {
         setVideoImage(Array.from(e.target.files));
+    };
+
+    const addBookmark = async () => {
+        const res = await fetch("http://localhost:5000/api/bookmark/addbookmark", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messageId: message.messageId,
+            })
+        });
+
+        console.log(res);
+    };
+
+    const removeBookmark = async (messageId) => {
+        const res = await fetch(`http://localhost:5000/api/bookmark/removebookmark/${messageId}`,{
+            method: "DELETE",
+            credentials: "include",
+        })
+
+        console.log(res);
     };
 
     const addParentMessage = async () =>{
@@ -82,6 +111,20 @@ function MessageCard({ message, emoji, allEmojis }){
                     />
                 );
             })}
+
+            <input
+                type="checkbox"
+                checked={bookmark}
+                onChange={async (e) => {
+                    if (e.target.checked) {
+                        await addBookmark();
+                        setBookmark(true);
+                    } else {
+                        await removeBookmark(message.messageId);
+                        setBookmark(false);
+                    }
+                }}
+            />
 
             <p>Themes: </p>
 

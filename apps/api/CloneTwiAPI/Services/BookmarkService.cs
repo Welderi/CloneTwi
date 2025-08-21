@@ -1,47 +1,80 @@
-﻿using CloneTwiAPI.Models;
+﻿using CloneTwiAPI.AutoMappers;
+using CloneTwiAPI.DTOs;
+using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {
-    public class BookmarkService
+    public class BookmarkService : GenericService<BookmarkDTO, Bookmark>
     {
-        private readonly CloneTwiContext _context;
-        private readonly UserGetter _userGetter;
         public BookmarkService(CloneTwiContext context, UserGetter userGetter)
+            : base(context, userGetter)
         {
-            _context = context;
-            _userGetter = userGetter;
         }
 
-        public async Task<IActionResult> AddBookmark(int messageId)
+        public async Task<IActionResult> AddBookmark(BookmarkDTO dto)
         {
-            var userId = _userGetter.GetUser().Result!.Id;
+            var result = await AddAsync(model: null, userBool: true,
+                            messageId: dto.MessageId,
+                            entity: BookmarkAutoMapper.ToEntity(dto));
 
-            var bookmark = new Bookmark
-            {
-                BookmarkUserId = userId,
-                BookmarkMessageId = messageId
-            };
+            var savedBookmark = (Bookmark)((OkObjectResult)result).Value!;
 
-            await _context.Bookmarks.AddAsync(bookmark);
-
-            await _context.SaveChangesAsync();
-
-            return new OkObjectResult("Success!");
+            return new OkObjectResult(BookmarkAutoMapper.ToDto(savedBookmark));
         }
 
         public async Task<IActionResult> RemoveBookmark(int messageId)
         {
             var userId = _userGetter.GetUser().Result!.Id;
 
-            var bookmark = _context.Bookmarks.FirstOrDefault(b => b.BookmarkUserId == userId &&
-                                                                  b.BookmarkMessageId == messageId);
+            var bookmark = _context.Bookmarks.FirstOrDefault(e => e.BookmarkMessageId == messageId &&
+                                                                  e.BookmarkUserId == userId);
+            if (bookmark == null) return new NotFoundResult();
 
-            _context.Bookmarks.Remove(bookmark!);
+            var result = await RemoveAsync(entity: bookmark);
 
-            await _context.SaveChangesAsync();
+            return new OkObjectResult(result);
+        }
 
-            return new OkObjectResult("Success!");
+        public async Task<ActionResult<BookmarkMessage>> GetAllBookmarks()
+        {
+            var user = await _userGetter.GetUser();
+
+            var bookmarks = await _context.Bookmarks
+                .AsNoTracking()
+                .Where(b => b.BookmarkUserId == user!.Id)
+                .ToListAsync();
+
+            var bookmarkDtos = bookmarks.Select(BookmarkAutoMapper.ToDto).ToList();
+
+            var messageIds = bookmarks.Select(b => b.BookmarkMessageId).Distinct().ToList();
+
+            var messages = await _context.Messages
+                .AsNoTracking()
+                .Where(m => messageIds.Contains(m.MessageId))
+                .ToListAsync();
+
+            var messageDtos = messages.Select(MessageAutoMapper.ToDto).ToList();
+
+            return new OkObjectResult(new BookmarkMessage
+            {
+                Bookmarks = bookmarkDtos,
+                Messages = messageDtos
+            });
+        }
+
+        public async Task<IEnumerable<BookmarkDTO>> GetAllBookmarksForUser()
+        {
+            var user = await _userGetter.GetUser();
+
+            var result = _context.Bookmarks
+                                 .AsNoTracking()
+                                 .Where(u => u.BookmarkUserId == user!.Id)
+                                 .ToList()
+                                 .Select(BookmarkAutoMapper.ToDto);
+
+            return result;
         }
     }
 }

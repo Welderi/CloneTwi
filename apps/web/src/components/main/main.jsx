@@ -6,7 +6,7 @@ import ControlMessages from "../messageController/controlMessages";
 import Select from "react-select";
 
 function Main() {
-    const {messages, emojis, users} = ControlMessages(null);
+    const {messages, emojis, users, bookmarks} = ControlMessages(null);
     const [search, setSearch] = useState({ type: "", value: "" });
 
     const searchOptions = useMemo(() => {
@@ -28,7 +28,7 @@ function Main() {
                     value: m.messageText,
                     type: "message"
                 })) || []),
-            
+
             ...themes
         ];
     }, [users, messages]);
@@ -63,6 +63,7 @@ function Main() {
                 <Link to="/changePassword">Change Password</Link>
                 <Link to="/userProfile">Profile</Link>
                 <Link to="/additionalUserSettings">Settings</Link>
+                <Link to="/bookmarks">Bookmarks</Link>
             </nav>
 
             <div>
@@ -87,6 +88,7 @@ function Main() {
                     message={msg}
                     emoji={emojis.filter(e => e.messageId === msg.messageId)}
                     allEmojis={emojis}
+                    bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
                 />
             ))}
         </div>

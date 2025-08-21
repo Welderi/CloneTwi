@@ -105,6 +105,7 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<EmojiService>();
             builder.Services.AddScoped<FollowService>();
             builder.Services.AddScoped<ThemeService>();
+            builder.Services.AddScoped<BookmarkService>();
 
             builder.Services.AddScoped(typeof(GenericService<,>));
 
