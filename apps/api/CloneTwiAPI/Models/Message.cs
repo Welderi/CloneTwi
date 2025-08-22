@@ -10,6 +10,8 @@ public partial class Message
 
     public bool? MessageIsEdited { get; set; }
 
+    public bool IsStory { get; set; } = false;
+
     [MessageId]
     public int? MessageParentId { get; set; }
 

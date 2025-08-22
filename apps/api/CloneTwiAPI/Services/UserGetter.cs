@@ -27,6 +27,14 @@ namespace CloneTwiAPI.Services
 
             return user;
         }
+
+        public async Task<string> GetUserId()
+        {
+            var user = await GetUser();
+
+            return user!.Id;
+        }
+
         public List<ApplicationUser> GetAllUsers()
         {
             return _userManager.Users.ToList();

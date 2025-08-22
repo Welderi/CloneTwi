@@ -9,7 +9,7 @@ async function GetMessages(userId) {
 
     const url = userId
         ? `http://localhost:5000/api/message/getgroupedmessages/${userId}`
-        : `http://localhost:5000/api/message/getgroupedmessages`;
+        : `http://localhost:5000/api/interest/getpostsbyinterest`;
 
     const data = await fetchMethodGet(url);
 

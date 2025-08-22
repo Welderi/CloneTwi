@@ -8,6 +8,7 @@ import UserProfile from "./components/userProfile/userProfile";
 import AdditionalUserSettings from "./components/additionalUserSettings/additionalUserSettings";
 import FirstPage from "./components/firstPage/firstPage";
 import Bookmarks from "./components/bookmarks/bookmarks";
+import ManageInterests from "./components/manageInterests/manageInterests";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/bookmarks" element={<Bookmarks/>}/>
                 <Route path="/register" element={<Register />} />
+                <Route path="/interests" element={<ManageInterests />}/>
                 <Route path="/changePassword" element={<ChangePassword />} />
                 <Route path="/userProfile/:userId?" element={<UserProfile />} />
                 <Route path="/additionalUserSettings" element={<AdditionalUserSettings />} />

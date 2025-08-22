@@ -64,6 +64,7 @@ function Main() {
                 <Link to="/userProfile">Profile</Link>
                 <Link to="/additionalUserSettings">Settings</Link>
                 <Link to="/bookmarks">Bookmarks</Link>
+                <Link to="/interests">Manage Interests</Link>
             </nav>
 
             <div>

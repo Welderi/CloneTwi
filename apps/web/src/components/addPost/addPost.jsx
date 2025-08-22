@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react";
 import createMessageAsync from "../messageController/createMessage";
 import fetchMethodGet from "../fetchMethods/fetchMethodGet";
 import CreatableSelect from "react-select/creatable";
-
-const THEMES = ["Creative", "History", "Science", "Hobby", "General"]
+import THEMES from "../themes/themes";
 
 function AddPost(){
     const [messageText, setMessageText] = useState("");

@@ -11,5 +11,6 @@ namespace CloneTwiAPI.Models
         public ICollection<FollowUser> Follower { get; set; } = new List<FollowUser>();
         public ICollection<FollowUser> Following { get; set; } = new List<FollowUser>();
         public ICollection<ApplicationUser?> ExtraUser { get; set; } = new List<ApplicationUser?>();
+        public ICollection<Interest> Interests { get; set; } = new List<Interest>();
     }
 }

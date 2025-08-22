@@ -32,6 +32,8 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<View> Views { get; set; }
 
+    public virtual DbSet<Interest> Interests { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -120,6 +122,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
             entity.ToTable("Message");
 
             entity.Property(e => e.MessageIsEdited).HasDefaultValue(false);
+            entity.Property(e => e.IsStory).HasDefaultValue(false);
             entity.Property(e => e.MessageParentId).HasColumnName("Message_ParentId");
             entity.Property(e => e.MessagePreviousVersionId).HasColumnName("Message_PreviousVersionId");
             entity.Property(e => e.MessageUserId)
@@ -194,6 +197,26 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.ViewMessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_View_Message");
+        });
+
+        modelBuilder.Entity<Interest>(entity =>
+        {
+            entity.HasKey(e => e.InterestId).HasName("PK__Interest__1E371CF61A783FC5");
+
+            entity.ToTable("Interest");
+
+            entity.Property(e => e.InterestTopic)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.Property(e => e.InterestUserId)
+                .HasMaxLength(450);
+
+            entity.HasOne(e => e.User)
+                  .WithMany(u => u.Interests)
+                  .HasForeignKey(e => e.InterestUserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -1,3 +1,4 @@
+using CloneTwiAPI.Cache;
 using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using CloneTwiAPI.Services;
@@ -106,6 +107,9 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<FollowService>();
             builder.Services.AddScoped<ThemeService>();
             builder.Services.AddScoped<BookmarkService>();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddScoped<InterestService>();
+            builder.Services.AddScoped<UserInterestCache>();
 
             builder.Services.AddScoped(typeof(GenericService<,>));
 
