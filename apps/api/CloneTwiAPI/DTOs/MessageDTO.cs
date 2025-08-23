@@ -10,9 +10,11 @@
 
         // To Server
         public List<IFormFile>? VideoMessages { get; set; }
+        public IFormFile? AudioMessage { get; set; }
 
         // To Client
         public List<string>? VideoMessagesTo { get; set; }
+        public string? AudioMessageTo { get; set; }
         public List<string>? Themes { get; set; }
         public Dictionary<string, int>? Emojis { get; set; }
     }

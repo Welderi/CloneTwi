@@ -1,4 +1,4 @@
-// message = {isParent, messageText, messageParentId, videoImage}
+// message = {isParent, messageText, messageParentId, videoImage, audioMessage, theme}
 
 const createMessageAsync = async (message) => {
     try{
@@ -6,13 +6,17 @@ const createMessageAsync = async (message) => {
         form.append("MessageText", message.messageText);
 
         if(message.messageParentId){
-            form.append("MessageParentId", message.messageParentId)
+            form.append("MessageParentId", message.messageParentId);
         }
 
         if(message.videoImage){
             for (let i = 0; i < message.videoImage.length; i++) {
                 form.append("VideoMessages", message.videoImage[i]);
             }
+        }
+
+        if(message.audioMessage){
+            form.append("AudioMessage", message.audioMessage);
         }
 
         if(message.themes){

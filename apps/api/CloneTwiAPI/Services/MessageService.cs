@@ -39,6 +39,23 @@ namespace CloneTwiAPI.Services
             }
         }
 
+        private async Task AddAudio(MessageDTO dto, Message message)
+        {
+            if (dto.AudioMessage != null)
+            {
+                var audioPath = await UploadService.Upload("videoImages", dto.AudioMessage);
+
+                var audioEntity = new AudioMessage
+                {
+                    AudioFile = audioPath,
+                    AudioMessageId = message.MessageId
+                };
+
+                await _context.AudioMessages.AddAsync(audioEntity);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task AddTheme(MessageDTO dto, Message message)
         {
             if (dto.Themes != null)
@@ -76,6 +93,10 @@ namespace CloneTwiAPI.Services
 
             await AddVideoOrImage(dto, savedMessage);
 
+            // Audio
+
+            await AddAudio(dto, savedMessage);
+
             // Themes
 
             await AddTheme(dto, savedMessage);
@@ -98,6 +119,7 @@ namespace CloneTwiAPI.Services
                                 .Include(vm => vm.VideoMessages)
                                 .Include(l => l.EmojiMessages)
                                 .Include(t => t.ThemeMessages)
+                                .Include(a => a.AudioMessages)
                                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(userId))

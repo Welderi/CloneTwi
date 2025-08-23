@@ -9,6 +9,7 @@ function AddPost(){
     const [message, setMessage] = useState("");
     const [videoImage, setVideoImage] = useState(null);
     const [allThemes, setAllThemes] = useState(THEMES);
+    const [audio, setAudio] = useState(null);
     const [selectedThemes, setSelectedThemes] = useState([]);
 
     const addFile = (e) => {
@@ -21,6 +22,7 @@ function AddPost(){
             messageText: messageText,
             messageParentId: null,
             videoImage: videoImage,
+            audioMessage: audio,
             themes: selectedThemes.map(t => t.value)
         };
 
@@ -42,8 +44,17 @@ function AddPost(){
 
     return(
         <div>
-            <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
-            <input type="file" onChange={addFile} accept="image/*,video/*" multiple />
+            <input type="text"
+                   value={messageText}
+                   onChange={(e) => setMessageText(e.target.value)}/>
+            <input type="file"
+                   onChange={addFile}
+                   accept="image/*,video/*"
+                   multiple />
+            <input type="file"
+                   onChange={(e) => setAudio(e.target.files[0])}
+                   accept="audio/*"/>
+
             <span>Theme</span>
 
             <CreatableSelect

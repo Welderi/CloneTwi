@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Emoji from "./emojis/emoji";
 import createMessageAsync from "../messageController/createMessage";
 
@@ -7,6 +7,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
     const [messageText, setMessageText] = useState("");
     const [videoImage, setVideoImage] = useState(null);
     const [bookmark, setBookmark] = useState(bookmarkBool);
+    const audioRef = useRef(null);
 
     const changeArrowState = () => { setArrowDown(prev => !prev); }
 
@@ -62,6 +63,17 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
 
     return(
         <div>
+            {message.audioMessageTo && (
+                <div>
+                    <audio
+                        ref={audioRef}
+                        src={`http://localhost:5000${message.audioMessageTo}`}
+                        preload="auto"
+                    />
+                    <button onClick={() => audioRef.current?.play()}>Play audio</button>
+                </div>
+            )}
+
             <h3>Message: </h3>
             <p>{message.messageText}</p>
 
