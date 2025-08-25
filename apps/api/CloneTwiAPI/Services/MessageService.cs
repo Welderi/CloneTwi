@@ -120,6 +120,7 @@ namespace CloneTwiAPI.Services
                                 .Include(l => l.EmojiMessages)
                                 .Include(t => t.ThemeMessages)
                                 .Include(a => a.AudioMessages)
+                                .Include(m => m.User)
                                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(userId))

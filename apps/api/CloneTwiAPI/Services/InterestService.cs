@@ -101,6 +101,7 @@ namespace CloneTwiAPI.Services
                 .Include(m => m.EmojiMessages)
                 .Include(m => m.ThemeMessages)
                 .Include(a => a.AudioMessages)
+                .Include(m => m.User)
                 .Where(m => m.ThemeMessages.Any(t => allRelevantThemes.Contains(t.ThemeType)))
                 .ToListAsync();
 

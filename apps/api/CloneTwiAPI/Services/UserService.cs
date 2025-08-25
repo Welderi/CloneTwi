@@ -127,7 +127,8 @@ namespace CloneTwiAPI.Services
         {
             var currentUser = await _userGetter.GetUser();
 
-            var users = _userGetter.GetAllUsers().Where(u => u.Id != currentUser!.Id)
+            var users = _userGetter.GetAllUsers()
+                .Where(u => u.Id != currentUser!.Id)
                 .Select(u => new
                 {
                     u.Id,

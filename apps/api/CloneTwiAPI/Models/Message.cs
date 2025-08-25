@@ -20,6 +20,8 @@ public partial class Message
     [UserId]
     public string MessageUserId { get; set; } = null!;
 
+    public ApplicationUser? User { get; set; }
+
     public virtual ICollection<AudioMessage> AudioMessages { get; set; } = new List<AudioMessage>();
 
     public virtual ICollection<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();

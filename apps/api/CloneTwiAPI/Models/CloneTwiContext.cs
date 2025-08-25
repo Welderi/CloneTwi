@@ -129,6 +129,12 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
                 .HasMaxLength(450)
                 .HasColumnName("Message_UserId");
 
+            entity.HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.MessageUserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Message_User");
+
             entity.HasOne(d => d.MessageParent).WithMany(p => p.InverseMessageParent)
                 .HasForeignKey(d => d.MessageParentId)
                 .HasConstraintName("FK_Message_Parent");

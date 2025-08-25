@@ -58,6 +58,7 @@ namespace CloneTwiAPI.Services
                 .Include(l => l.EmojiMessages)
                 .Include(t => t.ThemeMessages)
                 .Include(a => a.AudioMessages)
+                .Include(u => u.User)
                 .Where(m => reposts
                             .Select(r => r.RepostMessageId)
                             .Contains(m.MessageId))

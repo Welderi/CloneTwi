@@ -3,6 +3,7 @@ import Emoji from "./emojis/emoji";
 import createMessageAsync from "../messageController/createMessage";
 import VideoImageShow from "../messageController/videoImageShow";
 import fetchMethodPost from "../fetchMethods/fetchMethodPost";
+import {Link} from "react-router-dom";
 
 function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
     const [arrowDown, setArrowDown] = useState(true);
@@ -10,6 +11,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
     const [videoImage, setVideoImage] = useState(null);
     const [bookmark, setBookmark] = useState(bookmarkBool);
     const [repost, setRepost] = useState(repostBool);
+    const [user, setUser] = useState(message.user);
     const audioRef = useRef(null);
 
     const changeArrowState = () => { setArrowDown(prev => !prev); }
@@ -17,7 +19,8 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
     useEffect(() => {
         setBookmark(bookmarkBool);
         setRepost(repostBool);
-    }, [bookmarkBool, repostBool]);
+        setUser(message.user);
+    }, [bookmarkBool, repostBool, message.user]);
 
     const addFile = (e) => {
         setVideoImage(Array.from(e.target.files));
@@ -76,6 +79,9 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
         <div>
 
             <h3>Message: </h3>
+
+            <p>{user?.userName}</p>
+            <Link to={`/userProfile/${user?.id}`}>Profile</Link>
 
             {message.audioMessageTo && (
                 <div>

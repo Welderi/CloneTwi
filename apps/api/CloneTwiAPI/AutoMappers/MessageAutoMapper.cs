@@ -38,6 +38,14 @@ namespace CloneTwiAPI
                 Emojis = entity.EmojiMessages
                               .GroupBy(e => e.EmojiValue)
                               .ToDictionary(g => g.Key, g => g.Count()),
+                User = entity.User != null
+                    ? new UserDTO
+                    {
+                        Id = entity.User.Id,
+                        UserName = entity.User.UserName!,
+                        ProfileImageUrl = entity.User.ProfileImageUrl
+                    }
+                    : null,
                 Themes = entity.ThemeMessages.Select(t => t.ThemeType).ToList()
             };
         }
