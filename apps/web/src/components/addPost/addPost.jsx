@@ -23,6 +23,7 @@ function AddPost(){
             messageParentId: null,
             videoImage: videoImage,
             audioMessage: audio,
+            isStory: false,
             themes: selectedThemes.map(t => t.value)
         };
 

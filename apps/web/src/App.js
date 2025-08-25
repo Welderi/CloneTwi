@@ -9,6 +9,7 @@ import AdditionalUserSettings from "./components/additionalUserSettings/addition
 import FirstPage from "./components/firstPage/firstPage";
 import Bookmarks from "./components/bookmarks/bookmarks";
 import ManageInterests from "./components/manageInterests/manageInterests";
+import AddStory from "./components/addStory/addStory";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/bookmarks" element={<Bookmarks/>}/>
                 <Route path="/register" element={<Register />} />
+                <Route path="/addStory" element={<AddStory/>}/>
                 <Route path="/interests" element={<ManageInterests />}/>
                 <Route path="/changePassword" element={<ChangePassword />} />
                 <Route path="/userProfile/:userId?" element={<UserProfile />} />

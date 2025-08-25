@@ -4,16 +4,19 @@ const createMessageAsync = async (message) => {
     try{
         const form = new FormData();
         form.append("MessageText", message.messageText);
+        form.append("IsStory", message.isStory);
 
         if(message.messageParentId){
             form.append("MessageParentId", message.messageParentId);
         }
 
-        if(message.videoImage){
-            for (let i = 0; i < message.videoImage.length; i++) {
-                form.append("VideoMessages", message.videoImage[i]);
+        if (message.videoImage) {
+            const files = Array.isArray(message.videoImage) ? message.videoImage : [message.videoImage];
+            for (let i = 0; i < files.length; i++) {
+                form.append("VideoMessages", files[i]);
             }
         }
+
 
         if(message.audioMessage){
             form.append("AudioMessage", message.audioMessage);

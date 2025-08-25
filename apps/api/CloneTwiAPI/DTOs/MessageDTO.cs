@@ -4,6 +4,7 @@
     {
         public int MessageId { get; set; }
         public string? MessageText { get; set; }
+        public bool IsStory { get; set; }
         public int? MessageParentId { get; set; }
         public string? MessageUserId { get; set; }
         public List<MessageDTO>? Parents { get; set; }

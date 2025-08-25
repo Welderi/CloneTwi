@@ -14,6 +14,7 @@ namespace CloneTwiAPI
             return new Message
             {
                 MessageText = dto.MessageText,
+                IsStory = dto.IsStory,
                 MessageUserId = dto.MessageUserId!,
                 MessageParentId = dto.MessageParentId!,
                 InverseMessageParent = inverseMessageParents!,
@@ -27,6 +28,7 @@ namespace CloneTwiAPI
                 MessageId = entity.MessageId,
                 MessageText = entity.MessageText,
                 MessageUserId = entity.MessageUserId,
+                IsStory = entity.IsStory,
                 MessageParentId = entity.MessageParentId,
                 Parents = entity.InverseMessageParent != null
                         ? entity.InverseMessageParent.Select(e => ToDto(e)).ToList()

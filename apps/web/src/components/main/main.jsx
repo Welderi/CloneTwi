@@ -4,9 +4,10 @@ import MessageCard from "../messageCard/messageCard";
 import UserCard from "../userCard/userCard";
 import ControlMessages from "../messageController/controlMessages";
 import Select from "react-select";
+import Story from "../story/story";
 
 function Main() {
-    const {messages, emojis, users, bookmarks} = ControlMessages(null);
+    const {messages, emojis, users, bookmarks, stories} = ControlMessages(null);
     const [search, setSearch] = useState({ type: "", value: "" });
 
     const searchOptions = useMemo(() => {
@@ -41,7 +42,7 @@ function Main() {
     });
 
     const filteredMessages = messages
-        .filter(msg => msg.messageParentId === null)
+        .filter(msg => msg.messageParentId === null && (msg.isStory === false || msg.isStory === null))
         .filter(msg => {
             if (!normalizedSearch || search.type !== "message") return true;
             return (
@@ -52,7 +53,6 @@ function Main() {
             );
         });
 
-
     return (
         <div>
             <h1>Choose</h1>
@@ -62,6 +62,7 @@ function Main() {
                 <Link to="/register">Register</Link>
                 <Link to="/changePassword">Change Password</Link>
                 <Link to="/userProfile">Profile</Link>
+                <Link to="/addStory">Add Story</Link>
                 <Link to="/additionalUserSettings">Settings</Link>
                 <Link to="/bookmarks">Bookmarks</Link>
                 <Link to="/interests">Manage Interests</Link>
@@ -81,6 +82,12 @@ function Main() {
             {filteredUsers.map(user => (
                 <UserCard key={user.id} user={user} />
             ))}
+
+            <h2>Stories</h2>
+            {stories.map((story, index) => (
+                <Story key={index} story={story} />
+            ))}
+
 
             <h2>Messages:</h2>
             {filteredMessages.map(msg => (

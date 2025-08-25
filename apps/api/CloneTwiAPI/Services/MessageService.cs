@@ -131,5 +131,25 @@ namespace CloneTwiAPI.Services
 
             return new OkObjectResult(dtos);
         }
+
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetStories()
+        {
+            var user = await _userGetter.GetUserId();
+
+            var followings = _context.FollowUsers
+                .AsNoTracking()
+                .Where(f => f.FollowerUserId == user)
+                .Select(f => f.FollowingUserId);
+
+            var messages = _context.Set<Message>()
+                .AsNoTracking()
+                .Where(m => m.IsStory == true && followings.Contains(m.MessageUserId))
+                .Include(vm => vm.VideoMessages)
+                .Select(MessageAutoMapper.ToDto)
+                .ToList();
+            //.Include(l => l.EmojiMessages)
+
+            return new OkObjectResult(messages);
+        }
     }
 }
