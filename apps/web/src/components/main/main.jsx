@@ -7,7 +7,7 @@ import Select from "react-select";
 import Story from "../story/story";
 
 function Main() {
-    const {messages, emojis, users, bookmarks, stories} = ControlMessages(null);
+    const {messages, emojis, users, bookmarks, stories, reposts, addMessages} = ControlMessages(null);
     const [search, setSearch] = useState({ type: "", value: "" });
 
     const searchOptions = useMemo(() => {
@@ -90,6 +90,16 @@ function Main() {
 
 
             <h2>Messages:</h2>
+            {addMessages?.messages?.map(msg => (
+                <MessageCard
+                    key={msg.messageId}
+                    message={msg}
+                    emoji={emojis.filter(e => e.messageId === msg.messageId)}
+                    allEmojis={emojis}
+                    bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
+                    repostBool={reposts.some(e => e.messageId === msg.messageId)}
+                />
+            ))}
             {filteredMessages.map(msg => (
                 <MessageCard
                     key={msg.messageId}
@@ -97,6 +107,7 @@ function Main() {
                     emoji={emojis.filter(e => e.messageId === msg.messageId)}
                     allEmojis={emojis}
                     bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
+                    repostBool={reposts.some(e => e.messageId === msg.messageId)}
                 />
             ))}
         </div>

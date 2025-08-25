@@ -2,41 +2,56 @@ import React, {useEffect, useRef, useState} from "react";
 import Emoji from "./emojis/emoji";
 import createMessageAsync from "../messageController/createMessage";
 import VideoImageShow from "../messageController/videoImageShow";
+import fetchMethodPost from "../fetchMethods/fetchMethodPost";
 
-function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
+function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
     const [arrowDown, setArrowDown] = useState(true);
     const [messageText, setMessageText] = useState("");
     const [videoImage, setVideoImage] = useState(null);
     const [bookmark, setBookmark] = useState(bookmarkBool);
+    const [repost, setRepost] = useState(repostBool);
     const audioRef = useRef(null);
 
     const changeArrowState = () => { setArrowDown(prev => !prev); }
 
     useEffect(() => {
         setBookmark(bookmarkBool);
-    }, [bookmarkBool]);
+        setRepost(repostBool);
+    }, [bookmarkBool, repostBool]);
 
     const addFile = (e) => {
         setVideoImage(Array.from(e.target.files));
     };
 
     const addBookmark = async () => {
-        const res = await fetch("http://localhost:5000/api/bookmark/addbookmark", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                messageId: message.messageId,
-            })
-        });
+        const form = new FormData();
+        form.append("MessageId", message.messageId);
+
+        const res = await fetchMethodPost("http://localhost:5000/api/bookmark/addbookmark", form);
+
+        console.log(res);
+    };
+
+    const addRepost = async () => {
+        const form = new FormData();
+        form.append("MessageId", message.messageId);
+
+        const res = await fetchMethodPost("http://localhost:5000/api/repost/addrepost", form);
 
         console.log(res);
     };
 
     const removeBookmark = async (messageId) => {
         const res = await fetch(`http://localhost:5000/api/bookmark/removebookmark/${messageId}`,{
+            method: "DELETE",
+            credentials: "include",
+        })
+
+        console.log(res);
+    };
+
+    const removeRepost = async (messageId) => {
+        const res = await fetch(`http://localhost:5000/api/repost/removerepost/${messageId}`,{
             method: "DELETE",
             credentials: "include",
         })
@@ -98,7 +113,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
                 );
             })}
 
-            <input
+            Bookmark <input
                 type="checkbox"
                 checked={bookmark}
                 onChange={async (e) => {
@@ -108,6 +123,20 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool}){
                     } else {
                         await removeBookmark(message.messageId);
                         setBookmark(false);
+                    }
+                }}
+            />
+
+            | Repost <input
+                type="checkbox"
+                checked={repost}
+                onChange={async (e) => {
+                    if (e.target.checked) {
+                        await addRepost();
+                        setRepost(true);
+                    } else {
+                        await removeRepost(message.messageId);
+                        setRepost(false);
                     }
                 }}
             />

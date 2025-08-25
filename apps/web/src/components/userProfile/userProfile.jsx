@@ -32,7 +32,7 @@ function UserProfile(){
         getInfo();
     }, [userId])
 
-    const { messages, emojis } = ControlMessages(userInfo?.id);
+    const { messages, emojis, reposts, bookmarks } = ControlMessages(userInfo?.id);
 
     return(
       <div>
@@ -63,6 +63,8 @@ function UserProfile(){
                       message={msg}
                       emoji={emojis.filter(e => e.messageId === msg.messageId)}
                       allEmojis={emojis}
+                      bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
+                      repostBool={reposts.some(e => e.messageId === msg.messageId)}
                   />
               ))}
       </div>

@@ -107,6 +107,7 @@ namespace CloneTwiAPI
             builder.Services.AddScoped<FollowService>();
             builder.Services.AddScoped<ThemeService>();
             builder.Services.AddScoped<BookmarkService>();
+            builder.Services.AddScoped<RepostService>();
             builder.Services.AddMemoryCache();
             builder.Services.AddScoped<InterestService>();
             builder.Services.AddScoped<UserInterestCache>();

@@ -27,15 +27,27 @@ function ControlMessages(userId = null){
     const [users, setUsers] = useState([]);
     const [bookmarks, setBookmarks] = useState([]);
     const [stories, setStories] = useState([]);
+    const [reposts, setReposts] = useState([]);
+    const [addMessages, setAddMessages] = useState([]);
 
     const fetchMessages = async () => {
         const data = await GetMessages(userId);
         if (data) setMessages(data);
     };
 
+    const fetchAddMessages = async () => {
+        const data = await fetchMethodGet("http://localhost:5000/api/repost/getallrepostsforfollowers");
+        if (data) setAddMessages(data);
+    };
+
     const fetchStories = async () => {
         const data = await fetchMethodGet("http://localhost:5000/api/message/getstories");
         if (data) setStories(data);
+    };
+
+    const fetchReposts = async () => {
+        const data = await fetchMethodGet("http://localhost:5000/api/repost/getallrepostsforuser");
+        if (data) setReposts(data);
     };
 
     const fetchEmojis = async () => {
@@ -60,6 +72,8 @@ function ControlMessages(userId = null){
             await fetchStories();
             await fetchUsers();
             await fetchBookmarks();
+            await fetchReposts();
+            await fetchAddMessages();
         };
 
         fetchAll();
@@ -89,7 +103,7 @@ function ControlMessages(userId = null){
         };
     }, [userId]);
 
-    return {messages, emojis, users, bookmarks, stories};
+    return {messages, emojis, users, bookmarks, stories, reposts, addMessages};
 }
 
 export default ControlMessages;

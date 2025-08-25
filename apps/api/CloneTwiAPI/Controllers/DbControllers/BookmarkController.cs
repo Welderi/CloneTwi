@@ -15,13 +15,12 @@ namespace CloneTwiAPI.Controllers.DbControllers
             _service = service;
         }
 
+        [Authorize]
         [HttpPost("addbookmark")]
-        //[Authorize]
+        public async Task<IActionResult> AddBookmark([FromForm] BookmarkDTO dto) => await _service.AddBookmark(dto);
 
-        public async Task<IActionResult> AddBookmark([FromBody] BookmarkDTO dto) => await _service.AddBookmark(dto);
-
+        [Authorize]
         [HttpDelete("removebookmark/{messageId}")]
-        //[Authorize]
         public async Task<IActionResult> RemoveBookmark([FromRoute] int messageId) => await _service.RemoveBookmark(messageId);
 
         [HttpGet("getallbookmarks")]
