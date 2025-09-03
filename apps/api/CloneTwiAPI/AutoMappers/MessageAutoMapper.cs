@@ -34,7 +34,12 @@ namespace CloneTwiAPI
                         ? entity.InverseMessageParent.Select(e => ToDto(e)).ToList()
                         : null,
                 VideoMessagesTo = entity.VideoMessages.Select(e => e.VideoFile).ToList(),
-                AudioMessageTo = entity.AudioMessages.Select(e => e.AudioFile).FirstOrDefault(),
+                AudioMessageTo = entity.AudioMessages
+                                .Select(v => new AudioMessageDTO
+                                {
+                                    FilePath = v.AudioFile,
+                                    FileName = v.AudioName!
+                                }).FirstOrDefault(),
                 Emojis = entity.EmojiMessages
                               .GroupBy(e => e.EmojiValue)
                               .ToDictionary(g => g.Key, g => g.Count()),

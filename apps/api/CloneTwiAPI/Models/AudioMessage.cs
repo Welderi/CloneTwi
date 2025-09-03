@@ -8,6 +8,8 @@ public partial class AudioMessage
 
     public string AudioFile { get; set; } = null!;
 
+    public string? AudioName { get; set; }
+
     [MessageId]
     public int AudioMessageId { get; set; }
 

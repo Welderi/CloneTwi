@@ -34,6 +34,8 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Interest> Interests { get; set; }
 
+    public virtual DbSet<Notification> Notifications { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -46,6 +48,46 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId)
+                .HasName("PK_Notification");
+
+            entity.ToTable("Notification");
+
+            entity.Property(e => e.NotificationId).HasColumnName("NotificationId");
+
+            entity.Property(e => e.NotificationUserId)
+                .IsRequired()
+                .HasColumnName("NotificationUserId")
+                .HasMaxLength(450);
+
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasColumnName("Type")
+                .HasMaxLength(50);
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("CreatedAt")
+                .HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.Repost)
+                .WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.RepostId)
+                .HasConstraintName("FK_Notification_Repost");
+
+            entity.HasOne(d => d.Follow)
+                .WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.FollowId)
+                .HasConstraintName("FK_Notification_Follow");
+
+            entity.HasOne(d => d.Emoji)
+                .WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.EmojiId)
+                .HasConstraintName("FK_Notification_Emoji");
+        });
+
+
         modelBuilder.Entity<AudioMessage>(entity =>
         {
             entity.HasKey(e => e.AudioId).HasName("PK__AudioMes__A28A945054A6EAAE");
@@ -53,6 +95,8 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
             entity.ToTable("AudioMessage");
 
             entity.Property(e => e.AudioMessageId).HasColumnName("Audio_MessageId");
+
+            entity.Property(e => e.AudioName).HasColumnName("AudioName");
 
             entity.HasOne(d => d.AudioMessageNavigation).WithMany(p => p.AudioMessages)
                 .HasForeignKey(d => d.AudioMessageId)

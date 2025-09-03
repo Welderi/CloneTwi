@@ -1,16 +1,28 @@
 import React, {useState, useEffect} from "react";
 import MessageCard from "../messageCard/messageCard";
 import ControlMessages from "../messageController/controlMessages";
-import {useParams} from "react-router-dom";
+import useFollowController from "../userCard/followController";
+import { useLocation } from "react-router-dom";
 
 function UserProfile(){
     const [userInfo, setUserInfo] = useState(null);
-    const { userId } = useParams();
+    const location = useLocation();
+    const { user } = location.state;
+    const { follow, unfollow, count, isFollowed  } = useFollowController(user);
+
+    const handleFollowClick = () => {
+        if(isFollowed) {
+            unfollow();
+        }
+        else {
+            follow();
+        };
+    };
 
     useEffect(() => {
         const getInfo = async () => {
             try{
-                const response = await fetch(`http://localhost:5000/api/user/getuserinfo/${userId || ""}`, {
+                const response = await fetch(`http://localhost:5000/api/user/getuserinfo/${user.id || ""}`, {
                     method: "GET",
                     credentials: "include"
                 });
@@ -30,7 +42,7 @@ function UserProfile(){
         };
 
         getInfo();
-    }, [userId])
+    }, [user.id])
 
     const { messages, emojis, reposts, bookmarks } = ControlMessages(userInfo?.id);
 
@@ -54,6 +66,8 @@ function UserProfile(){
                   )}
               </>
           )}
+          <p>{count}</p>
+          <button onClick={handleFollowClick}>{isFollowed ? "Unfollow" : "Follow"}</button>
           <h2>Messages:</h2>
           {messages
               .filter(msg => msg.messageParentId === null)

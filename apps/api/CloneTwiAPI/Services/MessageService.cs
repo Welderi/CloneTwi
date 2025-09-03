@@ -48,6 +48,7 @@ namespace CloneTwiAPI.Services
                 var audioEntity = new AudioMessage
                 {
                     AudioFile = audioPath,
+                    AudioName = Path.GetFileNameWithoutExtension(dto.AudioMessage.FileName),
                     AudioMessageId = message.MessageId
                 };
 
@@ -80,6 +81,7 @@ namespace CloneTwiAPI.Services
         public async Task<IActionResult> AddMessageAsync(MessageDTO dto, bool isParent)
         {
             var message = await MessageAutoMapper.ToEntity(dto);
+
             IActionResult? result = null;
 
             if (isParent)

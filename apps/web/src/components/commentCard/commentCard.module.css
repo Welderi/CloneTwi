@@ -1,0 +1,38 @@
+.div{
+}
+
+.head{
+    display: flex;
+    gap: 5px;
+    position: relative;
+}
+
+.commentVideo{
+    width: 100px;
+    height: auto;
+}
+
+.like{
+    position: absolute;
+    right: 0;
+    top: 30%;
+}
+
+.input{
+    display: flex;
+}
+
+.message{
+    margin: -30px 0px 0 68px;
+}
+
+.reply{
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.reply p{
+    font-family: "Oxygen", sans-serif;
+    font-size: 12px;
+}

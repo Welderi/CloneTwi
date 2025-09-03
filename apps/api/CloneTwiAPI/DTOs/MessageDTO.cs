@@ -16,7 +16,7 @@
         // To Client
         public List<string>? VideoMessagesTo { get; set; }
         public UserDTO? User { get; set; }
-        public string? AudioMessageTo { get; set; }
+        public AudioMessageDTO? AudioMessageTo { get; set; }
         public List<string>? Themes { get; set; }
         public Dictionary<string, int>? Emojis { get; set; }
     }

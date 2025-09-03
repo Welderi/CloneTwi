@@ -13,4 +13,6 @@ public partial class Repost
     public string RepostUserId { get; set; } = null!;
 
     public virtual Message RepostMessage { get; set; } = null!;
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

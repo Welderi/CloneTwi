@@ -29,6 +29,7 @@ function ControlMessages(userId = null){
     const [stories, setStories] = useState([]);
     const [reposts, setReposts] = useState([]);
     const [addMessages, setAddMessages] = useState([]);
+    const [notifications, setNotifications] = useState([]);
 
     const fetchMessages = async () => {
         const data = await GetMessages(userId);
@@ -43,6 +44,11 @@ function ControlMessages(userId = null){
     const fetchStories = async () => {
         const data = await fetchMethodGet("http://localhost:5000/api/message/getstories");
         if (data) setStories(data);
+    };
+
+    const fetchNotifications = async () => {
+        const data = await fetchMethodGet("http://localhost:5000/api/notification/getallnotifications");
+        if (data) setNotifications(data);
     };
 
     const fetchReposts = async () => {
@@ -74,6 +80,7 @@ function ControlMessages(userId = null){
             await fetchBookmarks();
             await fetchReposts();
             await fetchAddMessages();
+            await fetchNotifications();
         };
 
         fetchAll();
@@ -103,7 +110,8 @@ function ControlMessages(userId = null){
         };
     }, [userId]);
 
-    return {messages, emojis, users, bookmarks, stories, reposts, addMessages};
+    return {messages, emojis, users, bookmarks,
+            stories, reposts, addMessages, notifications};
 }
 
 export default ControlMessages;

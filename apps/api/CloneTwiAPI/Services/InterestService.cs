@@ -95,18 +95,53 @@ namespace CloneTwiAPI.Services
 
             var allRelevantThemes = interests.Union(likedThemes).ToList();
 
-            var messages = await _context.Messages
-                .Include(m => m.InverseMessageParent)
+            var allMessages = await _context.Messages
+                .Include(m => m.User)
                 .Include(m => m.VideoMessages)
+                .Include(m => m.AudioMessages)
                 .Include(m => m.EmojiMessages)
                 .Include(m => m.ThemeMessages)
-                .Include(a => a.AudioMessages)
-                .Include(m => m.User)
-                .Where(m => m.ThemeMessages.Any(t => allRelevantThemes.Contains(t.ThemeType)))
+                .AsNoTracking()
                 .ToListAsync();
 
-            var dtos = messages.Select(MessageAutoMapper.ToDto).ToList();
-            return dtos;
+            var lookup = allMessages.ToLookup(m => m.MessageParentId);
+
+            List<MessageDTO> BuildTree(int? parentId)
+            {
+                return lookup[parentId]
+                    .Select(m => new MessageDTO
+                    {
+                        MessageId = m.MessageId,
+                        MessageText = m.MessageText,
+                        MessageUserId = m.MessageUserId,
+                        IsStory = m.IsStory,
+                        MessageParentId = m.MessageParentId,
+
+                        Parents = BuildTree(m.MessageId),
+
+                        VideoMessagesTo = m.VideoMessages.Select(v => v.VideoFile).ToList(),
+                        AudioMessageTo = m.AudioMessages.Select(v => new AudioMessageDTO
+                        {
+                            FilePath = v.AudioFile,
+                            FileName = v.AudioName!
+                        }).FirstOrDefault(),
+                        Emojis = m.EmojiMessages
+                                  .GroupBy(e => e.EmojiValue)
+                                  .ToDictionary(g => g.Key, g => g.Count()),
+                        User = m.User != null ? new UserDTO
+                        {
+                            Id = m.User.Id,
+                            UserName = m.User.UserName,
+                            ProfileImageUrl = m.User.ProfileImageUrl
+                        } : null,
+                        Themes = m.ThemeMessages.Select(t => t.ThemeType).ToList()
+                    })
+                    .ToList();
+            }
+
+            return BuildTree(null)
+                   .Where(m => m.Themes.Any(t => allRelevantThemes.Contains(t)))
+                   .ToList();
         }
     }
 }

@@ -1,167 +1,165 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import Emoji from "./emojis/emoji";
-import createMessageAsync from "../messageController/createMessage";
+import {useMessageForm} from "./useMessageForm";
 import VideoImageShow from "../messageController/videoImageShow";
-import fetchMethodPost from "../fetchMethods/fetchMethodPost";
 import {Link} from "react-router-dom";
+import st from "./messageCard.module.css";
+import More from "../more/more";
+import {person, book, music,
+        comment, more, picture} from "../../images";
+import CommentCard from "../commentCard/commentCard";
+import mSt from "../commentCard/commentCard.module.css";
 
 function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool}){
     const [arrowDown, setArrowDown] = useState(true);
-    const [messageText, setMessageText] = useState("");
-    const [videoImage, setVideoImage] = useState(null);
-    const [bookmark, setBookmark] = useState(bookmarkBool);
-    const [repost, setRepost] = useState(repostBool);
-    const [user, setUser] = useState(message.user);
+    const [onReply, setOnReply] = useState(null);
+    const [open, setOpen] = useState(false);
+
+    const {
+        user,
+        messageText,
+        videoImage,
+        setMessageText,
+        inputRef,
+        addFile,
+        addParentMessage,
+    } = useMessageForm(onReply || message, true);
+
     const audioRef = useRef(null);
 
-    const changeArrowState = () => { setArrowDown(prev => !prev); }
+    const changeArrowState = () => { setArrowDown(prev => !prev);}
 
-    useEffect(() => {
-        setBookmark(bookmarkBool);
-        setRepost(repostBool);
-        setUser(message.user);
-    }, [bookmarkBool, repostBool, message.user]);
-
-    const addFile = (e) => {
-        setVideoImage(Array.from(e.target.files));
+    const messageBtn = (messageReply) => {
+        setOnReply(messageReply);
     };
-
-    const addBookmark = async () => {
-        const form = new FormData();
-        form.append("MessageId", message.messageId);
-
-        const res = await fetchMethodPost("http://localhost:5000/api/bookmark/addbookmark", form);
-
-        console.log(res);
-    };
-
-    const addRepost = async () => {
-        const form = new FormData();
-        form.append("MessageId", message.messageId);
-
-        const res = await fetchMethodPost("http://localhost:5000/api/repost/addrepost", form);
-
-        console.log(res);
-    };
-
-    const removeBookmark = async (messageId) => {
-        const res = await fetch(`http://localhost:5000/api/bookmark/removebookmark/${messageId}`,{
-            method: "DELETE",
-            credentials: "include",
-        })
-
-        console.log(res);
-    };
-
-    const removeRepost = async (messageId) => {
-        const res = await fetch(`http://localhost:5000/api/repost/removerepost/${messageId}`,{
-            method: "DELETE",
-            credentials: "include",
-        })
-
-        console.log(res);
-    };
-
-    const addParentMessage = async () =>{
-        const messageForm = {
-            isParent: true,
-            messageText: messageText,
-            messageParentId: message.messageId,
-            videoImage: videoImage
-        };
-
-        await createMessageAsync(messageForm);
-        setMessageText("");
-        setVideoImage(null);
-    }
 
     return(
-        <div>
-
-            <h3>Message: </h3>
-
-            <p>{user?.userName}</p>
-            <Link to={`/userProfile/${user?.id}`}>Profile</Link>
-
-            {message.audioMessageTo && (
-                <div>
-                    <audio
-                        ref={audioRef}
-                        src={`http://localhost:5000${message.audioMessageTo}`}
-                        preload="auto"
-                    />
-                    <button onClick={() => audioRef.current?.play()}>Play audio</button>
-                </div>
-            )}
-
-            <p>{message.messageText}</p>
-
-            {Array.isArray(message.videoMessagesTo) && message.videoMessagesTo.length > 0 && (
-                <div>
-                    <VideoImageShow message={message}/>
-                </div>
-            )}
-
-
-            <button onClick={changeArrowState}>
-                {arrowDown ? "↓ Show Replies" : "↑ Hide Replies"}
-            </button>
-
-            {!arrowDown && message.parents && message.parents.map((msg, index) => {
-                const currentEmoji = allEmojis?.filter(e => e.messageId === msg.messageId) || [];
-                return (
-                    <MessageCard
-                        key={`${msg.messageId}-${index}`}
-                        message={msg}
-                        emoji={currentEmoji}
-                        allEmojis={allEmojis}
-                    />
-                );
-            })}
-
-            Bookmark <input
-                type="checkbox"
-                checked={bookmark}
-                onChange={async (e) => {
-                    if (e.target.checked) {
-                        await addBookmark();
-                        setBookmark(true);
-                    } else {
-                        await removeBookmark(message.messageId);
-                        setBookmark(false);
-                    }
-                }}
-            />
-
-            | Repost <input
-                type="checkbox"
-                checked={repost}
-                onChange={async (e) => {
-                    if (e.target.checked) {
-                        await addRepost();
-                        setRepost(true);
-                    } else {
-                        await removeRepost(message.messageId);
-                        setRepost(false);
-                    }
-                }}
-            />
-
-            <p>Themes: </p>
-
-            {message.themes && message.themes.map((theme, index) => {
-                return(
-                    <div key={index}>
-                        <p key={index}># {theme}</p>
+        <div className={st.div}>
+            <div className={st.head}>
+                <Link to={`/userProfile`}
+                      state={{ user }}>
+                    <div className={st.avDiv}>
+                        <img src={user.profileImageUrl === null
+                                    ? person : `http://localhost:5000${user.profileImageUrl}`}
+                             alt="person"
+                            />
                     </div>
-                );
-            })}
+                </Link>
+                <div className={st.textMusic}>
+                    <p className={st.username}>{user?.userName}</p>
+                    {message.audioMessageTo && (
+                        <div>
+                            <button onClick={() => audioRef.current?.play()} className={st.musicBtn}>
+                                <div className={st.insideBtn}>
+                                    <audio
+                                        ref={audioRef}
+                                        src={`http://localhost:5000${message.audioMessageTo.filePath}`}
+                                        preload="auto"
+                                    />
+                                    <div style={{display: "flex", gap: "5px"}}>
+                                        <img src={music}
+                                             alt="music"
+                                        />
+                                        <p className={st.musicText}>{message.audioMessageTo.fileName}</p>
+                                    </div>
+                                    <p style={{
+                                        fontSize: "10px",
+                                        fontFamily: "Oxygen, sans-serif",
+                                        color: "rgba(153, 148, 140, 1)"
+                                    }}>Натисни, щоб почути мелодію</p>
+                                </div>
+                            </button>
+                        </div>
+                    )}
+                </div>
+                <div>
+                    <button className={st.more}
+                            onClick={() => setOpen(prev => !prev)}>
+                        <img src={more}
+                             alt="more"/>
+                    </button>
+                </div>
+            </div>
+            <div className={st.msgBody}>
+                {Array.isArray(message.videoMessagesTo) && message.videoMessagesTo.length > 0 && (
+                    <div>
+                        <VideoImageShow message={message}/>
+                    </div>
+                )}
 
-            <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)}/>
-            <input type="file" onChange={addFile} accept="image/*,video/*" multiple />
-            <button onClick={addParentMessage}>Reply</button>
+                {open && (
+                    <div className="dropdownMenu">
+                        <More message={message}
+                              bookmarkBool={bookmarkBool}
+                              repostBool={repostBool}></More>
+                    </div>
+                )}
 
-            <Emoji emoji={emoji} message={message}/>
+                <div>
+                    <img src={book}
+                         alt="book"/>
+                    <p className={st.msgText}>{message.messageText}</p>
+                </div>
+
+                <hr/>
+
+                {!arrowDown && message.parents && message.parents.map((msg, index) => {
+                    const currentEmoji = allEmojis?.filter(e => e.messageId === msg.messageId) || [];
+                    return (
+                        <div key={`${msg.messageId}-${index}`}>
+                            <CommentCard
+                                message={msg}
+                                emoji={currentEmoji}
+                                allEmojis={allEmojis}
+                                first={message.messageParentId === null}
+                            />
+                            <button onClick={_ => messageBtn(msg)}
+                                    className={mSt.reply}>
+                                <p>Відповісти</p>
+                            </button>
+                        </div>
+                    );
+                })}
+
+                <div className={st.send}>
+                    <Emoji emoji={emoji} message={message}/>
+
+                    <button onClick={changeArrowState}
+                            className={st.comment}>
+                        <img src={comment}
+                             alt="comment"/>
+                    </button>
+
+                    <p>{onReply?.user?.userName || ""}</p>
+
+                    <input type="text"
+                           value={messageText}
+                           onChange={(e) => setMessageText(e.target.value)}
+                           placeholder={"Залишити свою думку"}
+                           className={st.inputText}/>
+
+                    {(messageText || videoImage) && (
+                        <button onClick={addParentMessage}>
+                            Reply
+                        </button>
+                    )}
+
+                    <div>
+                        <input type="file"
+                               onChange={addFile}
+                               ref={inputRef}
+                               accept="image/*,video/*"
+                               multiple
+                               style={{display: "none"}}/>
+                        <img
+                            src={picture}
+                            alt="Upload"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => inputRef.current.click()}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

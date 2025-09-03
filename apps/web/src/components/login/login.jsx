@@ -58,7 +58,7 @@ function Login(){
             <div className={`${st.mainDiv}`}>
                 <img src={logo}
                      alt="Dumka Logo"
-                     draggable={false}
+                     
                      className={gSt.logo}/>
                 <h1 className={`${st.h1}`}>Увійди, щоб продовжити бути голосом змін</h1>
                 <div className={`${gSt.centerDiv}`}>

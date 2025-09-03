@@ -13,4 +13,5 @@ public partial class FollowUser
     [ForeignKey(nameof(Following))]
     public string FollowingUserId { get; set; } = null!;
     public ApplicationUser Following { get; set; } = null!;
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

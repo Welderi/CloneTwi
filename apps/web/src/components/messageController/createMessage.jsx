@@ -4,7 +4,7 @@ const createMessageAsync = async (message) => {
     try{
         const form = new FormData();
         form.append("MessageText", message.messageText);
-        form.append("IsStory", message.isStory);
+        form.append("IsStory", message.isStory ? "true" : "false");
 
         if(message.messageParentId){
             form.append("MessageParentId", message.messageParentId);
@@ -16,7 +16,6 @@ const createMessageAsync = async (message) => {
                 form.append("VideoMessages", files[i]);
             }
         }
-
 
         if(message.audioMessage){
             form.append("AudioMessage", message.audioMessage);

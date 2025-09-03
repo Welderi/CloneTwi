@@ -15,4 +15,6 @@ public partial class EmojiMessage
     public int EmojiMessageId { get; set; }
 
     public virtual Message EmojiMessageNavigation { get; set; } = null!;
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

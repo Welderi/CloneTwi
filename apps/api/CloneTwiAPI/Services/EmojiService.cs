@@ -11,11 +11,14 @@ namespace CloneTwiAPI.Services
     public class EmojiService : GenericService<EmojiDTO, EmojiMessage>
     {
         private readonly IHubContext<PostHub> _hub;
+        private readonly NotificationService _service;
 
-        public EmojiService(CloneTwiContext context, UserGetter userGetter, IHubContext<PostHub> hub)
+        public EmojiService(CloneTwiContext context, UserGetter userGetter,
+                            IHubContext<PostHub> hub, NotificationService service)
             : base(context, userGetter)
         {
             _hub = hub;
+            _service = service;
         }
         private async Task<object> GetUserEmojisForMessage(int messageId, string? userId)
         {
@@ -75,6 +78,9 @@ namespace CloneTwiAPI.Services
             var savedEmoji = (EmojiMessage)((OkObjectResult)result).Value!;
 
             await NotifyClientsEmojiUpdate(dto.MessageId);
+
+            await _service.AddNotification(userId: savedEmoji.EmojiMessageNavigation.MessageUserId,
+                                           emojiId: savedEmoji.EmojiId);
 
             return new OkObjectResult(EmojiAutoMapper.ToDto(savedEmoji));
         }

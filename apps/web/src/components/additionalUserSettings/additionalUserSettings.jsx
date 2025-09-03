@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Link} from "react-router-dom";
 
 function AdditionalUserSettings(){
     const [bio, setBio] = useState("");
@@ -37,6 +38,9 @@ function AdditionalUserSettings(){
           <input type="file" onChange={addFile} accept="image/*"/>
           <p>{message}</p>
           <button onClick={addSettings}>Save</button>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
+          <Link to="/changePassword">Change Password</Link>
       </div>
     );
 }

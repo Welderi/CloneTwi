@@ -24,7 +24,7 @@ function App() {
                 <Route path="/addStory" element={<AddStory/>}/>
                 <Route path="/interests" element={<ManageInterests />}/>
                 <Route path="/changePassword" element={<ChangePassword />} />
-                <Route path="/userProfile/:userId?" element={<UserProfile />} />
+                <Route path="/userProfile" element={<UserProfile />} />
                 <Route path="/additionalUserSettings" element={<AdditionalUserSettings />} />
             </Routes>
         </BrowserRouter>

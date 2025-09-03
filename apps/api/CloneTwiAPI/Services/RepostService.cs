@@ -1,16 +1,24 @@
 ﻿using CloneTwiAPI.AutoMappers;
 using CloneTwiAPI.DTOs;
+using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloneTwiAPI.Services
 {
     public class RepostService : GenericService<RepostDTO, Repost>
     {
-        public RepostService(CloneTwiContext context, UserGetter userGetter)
+        private readonly IHubContext<PostHub> _hub;
+        private readonly NotificationService _service;
+
+        public RepostService(CloneTwiContext context, UserGetter userGetter,
+            IHubContext<PostHub> hub, NotificationService service)
             : base(context, userGetter)
         {
+            _hub = hub;
+            _service = service;
         }
 
         public async Task<IActionResult> AddRepost(RepostDTO dto)
@@ -20,6 +28,11 @@ namespace CloneTwiAPI.Services
                                         entity: RepostAutoMapper.ToEntity(dto));
 
             var savedRepost = (Repost)((OkObjectResult)result).Value!;
+
+            var newDto = MessageAutoMapper.ToDto(savedRepost.RepostMessage);
+
+            await _service.AddNotification(userId: savedRepost.RepostMessage.MessageUserId,
+                                           repostId: savedRepost.RepostId);
 
             return new OkObjectResult(RepostAutoMapper.ToDto(savedRepost));
         }

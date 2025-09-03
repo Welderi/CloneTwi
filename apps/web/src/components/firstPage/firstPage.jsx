@@ -27,7 +27,6 @@ function FirstPage(){
                     <div className={`${gSt.leftSide} ${leaving ? gSt.leftSideLeave : ""}`}>
                         <img src={logo}
                              alt="Dumka Logo"
-                             draggable={false}
                              className={gSt.logo}/>
                         <div className={st.mainText}>
                             <h1>Привіт.</h1>
@@ -37,7 +36,7 @@ function FirstPage(){
                                 новинами, жартами чи <br/> чимось дуже особистим.
                             </p>
                             <div className={st.stickerDiv}>
-                                <img src={sticker} alt="Sticker" draggable={false} className={st.sticker}/>
+                                <img src={sticker} alt="Sticker" className={st.sticker}/>
                                 <p className={`${st.blueText} ${st.absoluteBlueP}`}>Dumka — платформа для <br/> тих, хто має що сказати.</p>
                                 <p className={st.absoluteP}>А тепер...</p>
                         </div>

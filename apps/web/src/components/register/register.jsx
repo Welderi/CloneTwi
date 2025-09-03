@@ -69,7 +69,7 @@ function Register(){
             <div className={`${st.mainDiv}`}>
                 <img src={logo}
                      alt="Dumka Logo"
-                     draggable={false}
+                     
                      className={gSt.logo}/>
                 <h1 className={`${st.h1}`}>Зареєструйся, щоб бути частиною спільноти думок</h1>
                 <p className={`${st.h1}`}>Нова думка — новий крок</p>

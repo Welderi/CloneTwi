@@ -58,7 +58,6 @@ const Balls = React.memo(function Balls({vertical = false}) {
                             src={ball}
                             key={i}
                             className={st.orb}
-                            draggable={false}
                             style={{
                                 width: size,
                                 height: size,

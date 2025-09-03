@@ -1,0 +1,129 @@
+.div{
+    transition: background-color 1s ease;
+}
+
+.head{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(248, 248, 248, 1);
+    padding: 30px 40px;
+    box-shadow: 0px 2px 5px grey;
+    border-radius: 0 0px 100px 100px;
+    z-index: 2;
+}
+
+.msgDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+.fidySnipy {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    height: 125px;
+    border-radius: 0 0 60px 60px;
+    box-shadow: 0px 2px 5px grey;
+    width: 241px;
+    background-color: rgba(248, 248, 248, 1);
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.fidySnipy p {
+    display: flex;
+    font-family: "Oxygen", sans-serif;
+    font-size: 16px;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.fidySnipy hr {
+    width: 1px;
+    height: 100%;
+    background-color: #000;
+    border: none;
+    margin: 0;
+}
+
+.icons{
+    gap: 20px;
+    display: flex;
+}
+
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+.container {
+    width: 558px;
+}
+
+:global(.search__control) {
+    border-radius: 15px !important;
+    border: 0 !important;
+    background-color: rgba(67, 68, 67, 0.5) !important;
+    color: rgba(248, 248, 248, 1);
+    box-shadow: none !important;
+}
+
+:global(.search__placeholder) {
+    color: rgba(248, 248, 248, 1) !important;
+}
+
+:global(.search__single-value) {
+    color: rgba(248, 248, 248, 1) !important;
+}
+
+:global(.search__input) {
+    color: rgba(248, 248, 248, 1) !important;
+}
+
+:global(.search__menu) {
+    border-radius: 15px !important;
+    background-color: rgba(67, 68, 67, 0.5) !important;
+    color: rgba(248, 248, 248, 1);
+}
+
+.leftWin{
+    position: absolute;
+    border-radius: 0 0 100px 0px;
+    box-shadow: 0px 2px 5px grey;
+    padding: 150px 100px 100px 20px;
+    top: 0;
+    left: 0;
+    background-color: rgba(250, 235, 205, 1);
+}
+
+.options{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option{
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.option p{
+    font-family: "Oxygen", sans-serif;
+    font-size: 16px;
+}
+
+.option img{
+    margin-top: 14px;
+    width: 25px;
+    height: 25px;
+}
+
