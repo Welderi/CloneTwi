@@ -1,4 +1,5 @@
-﻿using CloneTwiAPI.DTOs;
+﻿using CloneTwiAPI.Cache;
+using CloneTwiAPI.DTOs;
 using CloneTwiAPI.Hubs;
 using CloneTwiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,13 @@ namespace CloneTwiAPI.Services
     public class MessageService : GenericService<MessageDTO, Message>
     {
         private readonly IHubContext<PostHub> _hub;
-        public MessageService(CloneTwiContext context, UserGetter userGetter, IHubContext<PostHub> hub)
+        private readonly UserInterestCache _userInterestCache;
+        public MessageService(CloneTwiContext context, UserGetter userGetter, IHubContext<PostHub> hub,
+            UserInterestCache userInterestCache)
             : base(context, userGetter)
         {
             _hub = hub;
+            _userInterestCache = userInterestCache;
         }
 
         private async Task AddVideoOrImage(MessageDTO dto, Message message)
@@ -59,20 +63,40 @@ namespace CloneTwiAPI.Services
 
         public async Task AddTheme(MessageDTO dto, Message message)
         {
-            if (dto.Themes != null)
+            List<string> themesToAdd = new();
+
+            if (dto.Themes != null && dto.Themes.Any())
             {
-                var themeEntities = new List<ThemeMessage>();
+                themesToAdd = dto.Themes;
+            }
+            else
+            {
+                var user = await _userGetter.GetUser();
 
-                foreach (var theme in dto.Themes)
+                var interests = await _userInterestCache.GetInterestsAsync(user!.Id);
+
+                var likedThemes = await _context.EmojiMessages
+                    .Join(_context.ThemeMessages,
+                          e => e.EmojiMessageId,
+                          t => t.ThemeMessageId,
+                          (e, t) => new { e.EmojiUserId, t.ThemeType })
+                    .Where(x => x.EmojiUserId == user.Id)
+                    .GroupBy(x => x.ThemeType)
+                    .Select(g => new { Theme = g.Key, Count = g.Count() })
+                    .Where(x => x.Count > 2)
+                    .Select(x => x.Theme)
+                    .ToListAsync();
+
+                themesToAdd = interests.Union(likedThemes).ToList();
+            }
+
+            if (themesToAdd.Any())
+            {
+                var themeEntities = themesToAdd.Select(theme => new ThemeMessage
                 {
-                    var themeEntity = new ThemeMessage
-                    {
-                        ThemeType = theme,
-                        ThemeMessageId = message.MessageId
-                    };
-
-                    themeEntities.Add(themeEntity);
-                }
+                    ThemeType = theme,
+                    ThemeMessageId = message.MessageId
+                }).ToList();
 
                 await AddRangeAsync(themeEntities);
             }
@@ -91,17 +115,17 @@ namespace CloneTwiAPI.Services
 
             var savedMessage = (Message)((OkObjectResult)result).Value!;
 
-            // Video | Image
-
-            await AddVideoOrImage(dto, savedMessage);
-
-            // Audio
-
-            await AddAudio(dto, savedMessage);
-
-            // Themes
-
-            await AddTheme(dto, savedMessage);
+            if (dto.IsStory)
+            {
+                await AddVideoOrImage(dto, savedMessage);
+                await AddTheme(dto, savedMessage);
+            }
+            else
+            {
+                await AddVideoOrImage(dto, savedMessage);
+                await AddAudio(dto, savedMessage);
+                await AddTheme(dto, savedMessage);
+            }
 
             var newDto = MessageAutoMapper.ToDto(savedMessage);
 
@@ -109,6 +133,7 @@ namespace CloneTwiAPI.Services
 
             return new OkObjectResult(newDto);
         }
+
         public async Task<bool> RemoveMessageAsync(MessageDTO dto)
         {
             return await RemoveAsync(entity: await MessageAutoMapper.ToEntity(dto));
@@ -146,7 +171,24 @@ namespace CloneTwiAPI.Services
 
             var messages = _context.Set<Message>()
                 .AsNoTracking()
-                .Where(m => m.IsStory == true && followings.Contains(m.MessageUserId))
+                .Where(m => m.IsStory == true &&
+                    (followings.Contains(m.MessageUserId) || m.MessageUserId == user))
+                .Include(vm => vm.VideoMessages)
+                .Select(MessageAutoMapper.ToDto)
+                .ToList();
+            //.Include(l => l.EmojiMessages)
+
+            return new OkObjectResult(messages);
+        }
+
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetUserStories(string? user)
+        {
+            if (user == null)
+                user = await _userGetter.GetUserId();
+
+            var messages = _context.Set<Message>()
+                .AsNoTracking()
+                .Where(m => m.IsStory == true && m.MessageUserId == user)
                 .Include(vm => vm.VideoMessages)
                 .Select(MessageAutoMapper.ToDto)
                 .ToList();

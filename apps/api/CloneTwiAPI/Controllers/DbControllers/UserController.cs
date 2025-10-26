@@ -59,6 +59,10 @@ namespace CloneTwiAPI.Controllers.DbControllers
         public async Task<IActionResult?> GetInfo([FromRoute] string? userId) => await _service.GetInfo(userId);
 
         [Authorize]
+        [HttpGet("isitme/{userId}")]
+        public async Task<IActionResult> GetIsItMe([FromRoute] string userId) => await _service.IsItMe(userId);
+
+        [Authorize]
         [HttpGet("getallusers")]
         public async Task<IActionResult> GetAllUsers() => await _service.GetAllUsers();
     }

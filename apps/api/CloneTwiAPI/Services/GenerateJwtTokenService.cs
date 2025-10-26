@@ -26,7 +26,8 @@ namespace CloneTwiAPI.Services
                     new Claim(ClaimTypes.Name, model.UserName!)
                 }),
                 Expires = DateTime.UtcNow.AddHours(100),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key),
+                                                            SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

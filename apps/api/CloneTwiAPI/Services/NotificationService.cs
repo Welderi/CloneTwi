@@ -23,6 +23,11 @@ namespace CloneTwiAPI.Services
              int? repostId = null,
              int? emojiId = null)
         {
+            string user = await _userGetter.GetUserId();
+
+            if (user == userId)
+                return new OkObjectResult("Success");
+
             var type = followId.HasValue ? "follow" :
                        repostId.HasValue ? "repost" :
                        emojiId.HasValue ? "like" :
@@ -55,16 +60,28 @@ namespace CloneTwiAPI.Services
                 .Where(u => u.NotificationUserId == userId)
                 .ToListAsync();
 
-            var tasks = notifications.Select(async notification =>
-            {
-                ApplicationUser userEntity;
+            var userIds = notifications
+                .Select(n => n.Follow?.FollowerUserId ?? n.Repost?.RepostUserId ?? n.Emoji?.EmojiUserId)
+                .Where(id => id != null)
+                .Distinct()
+                .ToList();
 
-                if (notification.Follow != null)
-                    userEntity = await _userGetter.FindById(notification.Follow.FollowerUserId);
-                else if (notification.Repost != null)
-                    userEntity = await _userGetter.FindById(notification.Repost.RepostUserId);
-                else
-                    userEntity = await _userGetter.FindById(notification.Emoji.EmojiUserId);
+            var users = await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u);
+
+            var result = new List<NotificationDTO>();
+
+            foreach (var notification in notifications)
+            {
+                var relatedUserId = notification.Follow?.FollowerUserId
+                                    ?? notification.Repost?.RepostUserId
+                                    ?? notification.Emoji?.EmojiUserId;
+
+                if (relatedUserId == null || !users.TryGetValue(relatedUserId, out var userEntity))
+                {
+                    continue;
+                }
 
                 var userDto = new UserDTO
                 {
@@ -73,10 +90,11 @@ namespace CloneTwiAPI.Services
                     ProfileImageUrl = userEntity.ProfileImageUrl
                 };
 
-                return NotificationAutoMapper.ToDto(notification, userDto);
-            });
+                result.Add(NotificationAutoMapper.ToDto(notification, userDto));
+            }
 
-            return new OkObjectResult(await Task.WhenAll(tasks));
+            return new OkObjectResult(result);
         }
+
     }
 }

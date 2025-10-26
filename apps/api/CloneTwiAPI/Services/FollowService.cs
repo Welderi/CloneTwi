@@ -50,7 +50,12 @@ namespace CloneTwiAPI.Services
                                                    f.FollowingUserId == followedUser!.Id);
 
                 if (existingFollow != null)
+                {
                     _context.FollowUsers.Remove(existingFollow);
+
+                    var notifications = _context.Notifications.Where(n => n.FollowId == existingFollow.FollowId);
+                    _context.Notifications.RemoveRange(notifications);
+                }
 
                 await _context.SaveChangesAsync();
             }
@@ -94,5 +99,16 @@ namespace CloneTwiAPI.Services
                                       .AsNoTracking()
                                       .CountAsync(u => u.FollowingUserId == userId);
         }
+        public async Task<int> GetCountofFollowing(string? userId = null)
+        {
+            if (userId == null)
+                userId = _currentUser.Id;
+
+            return await _context.FollowUsers
+                                      .AsNoTracking()
+                                      .CountAsync(u => u.FollowerUserId == userId);
+        }
+
+
     }
 }

@@ -92,6 +92,24 @@ namespace CloneTwiAPI
 
             //SERVICES
 
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie(options =>
+            //{
+            //    options.Cookie.SameSite = SameSiteMode.Lax;
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            //})
+            //.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = builder.Configuration.GetValue<string>("Google:Id");
+            //    googleOptions.ClientSecret = builder.Configuration.GetValue<string>("Google:Secret");
+            //    googleOptions.CallbackPath = "/api/auth/google-callback";
+            //});
+
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
             })

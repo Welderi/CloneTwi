@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from "react";
 import fetchMethodGet from "../fetchMethods/fetchMethodGet";
+import MessageCard from "../messageCard/messageCard";
+import ControlMessages from "../messageController/controlMessages";
+import RepeatedBalls from "../globalStyle/repeatedBalls";
+import {logo} from "../../images";
 
 function Bookmarks() {
     const [bookmarksWithMessages, setBookmarksWithMessages] = useState([]);
+
+    const {
+        messages = [],
+        emojis = [],
+        users = [],
+        bookmarks = [],
+        stories = [],
+        reposts = [],
+        addMessages = [],
+        notifications = []
+    } = ControlMessages(null);
 
     useEffect(() => {
         const fetchBookmarks = async () => {
@@ -32,15 +47,23 @@ function Bookmarks() {
     }, []);
 
     return (
-        <div>
-            <h2>Bookmarks</h2>
-            {bookmarksWithMessages.length === 0 && <p>No bookmarks found.</p>}
-            {bookmarksWithMessages.map(bm => (
-                <div key={`${bm.bookmarkId}-${bm.MessageId}`}>
-                    <b>Message Text:</b>{" "}
-                    {bm.message?.messageText || ""}
-                </div>
-            ))}
+        <div style={{overflow: "hidden"}}>
+            <RepeatedBalls/>
+            <img src={logo} alt="" style={{margin: "40px"}}/>
+            <div style={{display: "flex", flexDirection: "column", gap: "20px", alignItems: "center"}}>
+                {bookmarksWithMessages.length === 0 && <p>No bookmarks found.</p>}
+                {bookmarksWithMessages.map(bm => (
+                    <div key={`${bm.bookmarkId}-${bm.MessageId}`}>
+                        <MessageCard
+                            message={bm.message}
+                            emoji={emojis.filter(e => e.messageId === bm.MessageId)}
+                            allEmojis={emojis}
+                            bookmarkBool={bookmarks.some(e => e.messageId === bm.MessageId)}
+                            repostBool={reposts.some(e => e.messageId === bm.MessageId)}
+                        />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

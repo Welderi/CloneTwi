@@ -1,92 +1,114 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import st from "./more.module.css";
-import {today, pin, repostIcon} from "../../images";
+import { today, pin, repostIcon } from "../../images";
 import fetchMethodPost from "../fetchMethods/fetchMethodPost";
+import useFollowController from "../userCard/followController";
 
-function More({message, bookmarkBool, repostBool}){
+function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
     const [bookmark, setBookmark] = useState(bookmarkBool);
     const [repost, setRepost] = useState(repostBool);
 
-    useEffect(() =>{
+    const { follow, unfollow, isFollowed } = useFollowController(user);
+
+    useEffect(() => {
         setBookmark(bookmarkBool);
         setRepost(repostBool);
-    }, [bookmarkBool, repostBool])
+    }, [bookmarkBool, repostBool]);
 
     const addBookmark = async () => {
         const form = new FormData();
         form.append("MessageId", message.messageId);
-
-        const res = await fetchMethodPost("http://localhost:5000/api/bookmark/addbookmark", form);
-
-        console.log(res);
+        await fetchMethodPost("http://localhost:5000/api/bookmark/addbookmark", form);
+        setBookmark(true);
     };
 
     const removeBookmark = async (messageId) => {
-        const res = await fetch(`http://localhost:5000/api/bookmark/removebookmark/${messageId}`,{
+        await fetch(`http://localhost:5000/api/bookmark/removebookmark/${messageId}`, {
             method: "DELETE",
             credentials: "include",
-        })
-
-        console.log(res);
+        });
+        setBookmark(false);
     };
 
     const addRepost = async () => {
         const form = new FormData();
         form.append("MessageId", message.messageId);
-
-        const res = await fetchMethodPost("http://localhost:5000/api/repost/addrepost", form);
-
-        console.log(res);
+        await fetchMethodPost("http://localhost:5000/api/repost/addrepost", form);
+        setRepost(true);
     };
 
     const removeRepost = async (messageId) => {
-        const res = await fetch(`http://localhost:5000/api/repost/removerepost/${messageId}`,{
+        await fetch(`http://localhost:5000/api/repost/removerepost/${messageId}`, {
             method: "DELETE",
             credentials: "include",
-        })
-
-        console.log(res);
+        });
+        setRepost(false);
     };
 
-    return(
-        <div className={st.div}>
-            <button className={st.bookmark}
+    return (
+        <div className={st.wrapper}>
+            {/* крестик закрытия */}
+            <button className={st.closeBtn} onClick={onClose}>
+                ×
+            </button>
+
+            <div className={st.topRow}>
+                <button
+                    className={st.bookmark}
                     onClick={async () => {
                         if (!bookmark) {
                             await addBookmark();
-                            setBookmark(true);
                         } else {
                             await removeBookmark(message.messageId);
-                            setBookmark(false);
                         }
-                    }}>
-                <div className={st.hover}>
-                    <div className={st.circle}>
-                        {!bookmark ?
-                            <img src={pin} alt="pin"/> :
-                            <img src={today} alt="today"/>}
+                    }}
+                >
+                    <div className={st.hover}>
+                        <div className={st.circle}>
+                            {!bookmark ? <img src={pin} alt="pin" /> : <img src={today} alt="today" />}
+                        </div>
+                        <p>Зберегти</p>
                     </div>
-                    <p>Зберегти</p>
-                </div>
-            </button>
-            <button className={st.bookmark}
-                onClick={async () => {
-                    if (!repost) {
-                        await addRepost();
-                        setRepost(true);
-                    } else {
-                        await removeRepost(message.messageId);
-                        setRepost(false);
-                    }
-                }}
-            >
-                <div className={st.hover}>
-                    <div className={st.circle}>
-                        <img src={repostIcon} alt="repost"/>
+                </button>
+
+                <button
+                    className={st.bookmark}
+                    onClick={async () => {
+                        if (!repost) {
+                            await addRepost();
+                        } else {
+                            await removeRepost(message.messageId);
+                        }
+                    }}
+                >
+                    <div className={st.hover}>
+                        <div className={st.circle}>
+                            <img src={repostIcon} alt="repost" />
+                        </div>
+                        <p>Репост</p>
                     </div>
-                    <p>Репост</p>
-                </div>
-            </button>
+                </button>
+            </div>
+
+            <div className={st.bottomColumn}>
+                {!isItMe && (
+                    <button
+                        className={st.textButton}
+                        onClick={isFollowed ? unfollow : follow}
+                    >
+                        {isFollowed ? "Від'єднатися від оновлень" : "Доєднатися до оновлень"}
+                    </button>
+                )}
+
+                <Link
+                    to={`/userProfile`}
+                    state={isItMe ? null : user}
+                    className={st.textButton}
+                >
+                    Про користувача
+                </Link>
+            </div>
         </div>
     );
 }

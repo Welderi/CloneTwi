@@ -1,0 +1,116 @@
+.profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 304px;
+    color: white;
+    gap: 50px;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 304px;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.profileImg {
+    border-radius: 50%;
+    border: 3px solid white;
+    width: 212px;
+    height: 212px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.profileInfo {
+    gap: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profileInfo p:first-child {
+    font-size: 36px;
+    margin: 0;
+}
+
+.profileInfo p:last-child {
+    font-size: 16px;
+    font-style: italic;
+    margin: 0;
+}
+
+.profileBtn{
+    position: absolute;
+    right: 0;
+    margin: 32px 300px;
+    cursor: pointer;
+    bottom: 0;
+    border: 2px solid rgba(249, 241, 226, 1);
+    height: 34px;
+    width: 136px;
+    border-radius: 30px;
+}
+
+.profileBtnBackFollow{
+    background: rgba(249, 241, 226, 1);
+    color: rgba(58, 47, 31, 1);
+}
+
+.profileBtnBackUnFollow{
+    background: transparent;
+    color: rgba(249, 241, 226, 1);
+}
+
+.centerBox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.buttons{
+    margin: 30px 30px 0 30px;
+    gap: 35px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.buttons p{
+    border: 0;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.underline {
+    position: relative;
+    width: 80%;
+    height: 3px;
+    background: linear-gradient(to right, transparent, gray, transparent);
+    margin-top: 10px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.activeIndicator {
+    position: absolute;
+    left: 45%;
+    top: 0;
+    height: 100%;
+    background-color: rgba(62, 116, 183, 1);
+    border-radius: 3px;
+    transition: transform 0.3s ease;
+}
+
+
+

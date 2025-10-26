@@ -1,0 +1,81 @@
+.searchResults {
+    position: absolute;
+    top: 42px;
+    left: -25px;
+    right: 0;
+    /*max-width: 720px;*/
+    width: 580px;
+    margin: 8px auto 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.tabs {
+    justify-content: space-around;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+}
+
+.tabs button {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.tabs button:hover { background: rgba(0,0,0,0.03); }
+
+.active {
+    background: #e8e8e8;
+    font-weight: 600;
+}
+
+.resultsList {
+    max-height: 360px;
+    overflow: auto;
+    padding: 10px;
+}
+
+.userRow, .postRow {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    align-items: flex-start;
+    border-radius: 8px;
+}
+
+.userRow:hover, .postRow:hover {
+    background: rgba(0,0,0,0.03);
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userName { margin:0; font-weight:600 }
+.userBio { font-size: 13px; color: #666 }
+
+.postText { margin:0 0 6px 0; }
+.postAuthor { font-size: 13px; color: #777 }
+
+.themeTag {
+    display: inline-block;
+    padding: 6px 10px;
+    margin: 6px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.05);
+}
+
+.empty { padding: 18px; color: #666; text-align:center; }
+
+.resultLink { text-decoration: none; color: inherit; display: block; }

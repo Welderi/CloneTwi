@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 
 function VideoImageShow({ message }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [maxHeight, setMaxHeight] = useState(400);
+    const [maxHeight, setMaxHeight] = useState(300);
     const containerRefs = useRef([]);
+
+    const MAX_HEIGHT = 450;
+    const MAX_WIDTH = 450;
+    const ITEM_MARGIN = 2;
 
     const isVideoFile = (fileName) => {
         const videoExtensions = [".mp4", ".webm", ".ogg", ".mov"];
@@ -14,19 +18,13 @@ function VideoImageShow({ message }) {
 
     useEffect(() => {
         if (!Array.isArray(message.videoMessagesTo)) return;
-
-        const heights = containerRefs.current.map((el) =>
-            el ? el.offsetHeight : 0
-        );
+        const heights = containerRefs.current.map((el) => (el ? el.offsetHeight : 0));
         if (heights.length > 0) {
-            setMaxHeight(Math.max(...heights));
+            setMaxHeight(Math.min(Math.max(...heights), MAX_HEIGHT));
         }
     }, [message.videoMessagesTo]);
 
-    if (
-        !Array.isArray(message.videoMessagesTo) ||
-        message.videoMessagesTo.length === 0
-    ) {
+    if (!Array.isArray(message.videoMessagesTo) || message.videoMessagesTo.length === 0) {
         return null;
     }
 
@@ -42,13 +40,16 @@ function VideoImageShow({ message }) {
         );
     };
 
+    const singleItem = message.videoMessagesTo.length === 1;
+
     return (
         <div
             style={{
                 position: "relative",
                 overflow: "hidden",
-                // maxWidth: "1000px",
                 margin: "0 auto",
+                display: "flex",
+                justifyContent: singleItem ? "center" : "flex-start",
             }}
         >
             <div
@@ -60,50 +61,49 @@ function VideoImageShow({ message }) {
             >
                 {message.videoMessagesTo.map((path, index) => {
                     const url = `http://localhost:5000${path.trim?.() || path}`;
+                    const isVideo = isVideoFile(url);
 
                     return (
                         <div
                             key={index}
                             ref={(el) => (containerRefs.current[index] = el)}
                             style={{
-                                flex: "0 0 70%",
+                                flex: "0 0 80%",
                                 height: `${maxHeight}px`,
                                 overflow: "hidden",
-                                backgroundColor: "transparent",
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                margin: "0 5px",
+                                margin: `0 ${ITEM_MARGIN}px`,
+                                padding: 0,
                             }}
                         >
-                            {isVideoFile(url) ? (
+                            {isVideo ? (
                                 <video
                                     controls
                                     src={url}
-                                    onLoadedMetadata={(e) => {
-                                        const h = e.target.videoHeight;
-                                        if (h > maxHeight) setMaxHeight(h);
-                                    }}
                                     style={{
                                         width: "100%",
+                                        maxWidth: `${MAX_WIDTH}px`,
                                         height: "100%",
+                                        maxHeight: `${MAX_HEIGHT}px`,
                                         objectFit: "contain",
                                         borderRadius: "16px",
+                                        display: "block",
                                     }}
                                 />
                             ) : (
                                 <img
                                     src={url}
                                     alt="Media"
-                                    onLoad={(e) => {
-                                        const h = e.target.naturalHeight;
-                                        if (h > maxHeight) setMaxHeight(h);
-                                    }}
                                     style={{
                                         width: "100%",
+                                        maxWidth: `${MAX_WIDTH}px`,
                                         height: "100%",
+                                        maxHeight: `${MAX_HEIGHT}px`,
                                         objectFit: "contain",
                                         borderRadius: "16px",
+                                        display: "block",
                                     }}
                                 />
                             )}
@@ -145,33 +145,35 @@ function VideoImageShow({ message }) {
                 </>
             )}
 
-            <div
-                style={{
-                    position: "absolute",
-                    bottom: "0",
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                    gap: "8px",
-                    zIndex: 3,
-                }}
-            >
-                {message.videoMessagesTo.map((_, index) => (
-                    <span
-                        key={index}
-                        style={{
-                            width: "10px",
-                            height: "10px",
-                            borderRadius: "50%",
-                            backgroundColor:
-                                index === currentIndex
-                                    ? "rgba(62, 116, 183, 1)"
-                                    : "rgba(58, 47, 31, 1)",
-                            transition: "background-color 0.3s",
-                        }}
-                    />
-                ))}
-            </div>
+            {message.videoMessagesTo.length > 1 && (
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: "0",
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                        gap: "8px",
+                        zIndex: 3,
+                    }}
+                >
+                    {message.videoMessagesTo.map((_, index) => (
+                        <span
+                            key={index}
+                            style={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor:
+                                    index === currentIndex
+                                        ? "rgba(62, 116, 183, 1)"
+                                        : "rgba(58, 47, 31, 1)",
+                                transition: "background-color 0.3s",
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

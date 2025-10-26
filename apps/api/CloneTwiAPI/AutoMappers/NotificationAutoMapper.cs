@@ -10,7 +10,7 @@ namespace CloneTwiAPI.AutoMappers
             {
                 User = user,
                 Emoji = entity.Emoji != null ? EmojiAutoMapper.ToDto(entity.Emoji!) : null,
-                Follow = entity.Follow ?? null,
+                Follow = entity.Follow != null ? FollowAutoMapper.ToDto(entity.Follow) : null,
                 Repost = entity.Repost != null ? RepostAutoMapper.ToDto(entity.Repost!) : null,
             };
     }

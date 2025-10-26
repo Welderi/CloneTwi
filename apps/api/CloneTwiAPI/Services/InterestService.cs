@@ -139,9 +139,13 @@ namespace CloneTwiAPI.Services
                     .ToList();
             }
 
-            return BuildTree(null)
-                   .Where(m => m.Themes.Any(t => allRelevantThemes.Contains(t)))
-                   .ToList();
+            var result = BuildTree(null);
+
+            if (allRelevantThemes.Any())
+                result = result.Where(m => m.Themes.Any(t => allRelevantThemes.Contains(t)))
+                               .ToList();
+
+            return result;
         }
     }
 }

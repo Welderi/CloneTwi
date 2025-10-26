@@ -86,10 +86,15 @@ function Login(){
                         <p className={gSt.error}>{message}</p>
                         <button onClick={login}
                                 className={`${gSt.blueBtn} ${st.loginBtn}`}>Увійти</button>
-                        <p style={{fontWeight: "bolder",
-                                   fontSize: "14px"}}>aбо</p>
-                        <button className={`${gSt.trBtn} ${st.googleBtn}`}>
-                            Google <img src={google} alt="google"/></button>
+                        {/*<p style={{fontWeight: "bolder",*/}
+                        {/*           fontSize: "14px"}}>aбо</p>*/}
+                        {/*<button*/}
+                        {/*    className={`${gSt.trBtn} ${st.googleBtn}`}*/}
+                        {/*    onClick={() => window.location.href = "http://localhost:5000/api/auth/google-login"}*/}
+                        {/*>*/}
+                        {/*    Google <img src={google} alt="google"/>*/}
+                        {/*</button>*/}
+
                     </div>
                     <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
                         <Balls vertical={true}/>

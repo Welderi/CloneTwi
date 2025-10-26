@@ -23,11 +23,16 @@ namespace CloneTwiAPI.Services
 
         public async Task<IActionResult> AddRepost(RepostDTO dto)
         {
-            var result = await AddAsync(model: null, userBool: true,
-                                        messageId: dto.MessageId,
-                                        entity: RepostAutoMapper.ToEntity(dto));
+            var result = await AddAsync(
+                    model: null,
+                    userBool: true,
+                    messageId: dto.MessageId,
+                    entity: RepostAutoMapper.ToEntity(dto)
+                );
 
-            var savedRepost = (Repost)((OkObjectResult)result).Value!;
+            var savedRepost = await _context.Reposts
+                .Include(r => r.RepostMessage)
+                .FirstAsync(r => r.RepostId == ((Repost)((OkObjectResult)result).Value!).RepostId);
 
             var newDto = MessageAutoMapper.ToDto(savedRepost.RepostMessage);
 
@@ -44,6 +49,9 @@ namespace CloneTwiAPI.Services
             var repost = _context.Reposts.FirstOrDefault(e => e.RepostMessageId == messageId &&
                                                                   e.RepostUserId == userId);
             if (repost == null) return new NotFoundResult();
+
+            var notifications = _context.Notifications.Where(n => n.RepostId == repost.RepostId);
+            _context.Notifications.RemoveRange(notifications);
 
             var result = await RemoveAsync(entity: repost);
 
@@ -62,29 +70,32 @@ namespace CloneTwiAPI.Services
                 .Where(u => allFollowing.Contains(u.Id))
                 .Select(u => u.Id);
 
-            var reposts = _context.Reposts
-                .Where(u => users.Contains(u.RepostUserId));
+            var reposts = await _context.Reposts
+                .Where(u => users.Contains(u.RepostUserId))
+                .ToListAsync();
 
-            var messages = _context.Messages
+            var messages = await _context.Messages
+                .Include(m => m.User)
+                .Include(m => m.VideoMessages)
+                .Include(m => m.AudioMessages)
+                .Include(m => m.EmojiMessages)
+                .Include(m => m.ThemeMessages)
                 .Include(m => m.InverseMessageParent)
-                .Include(vm => vm.VideoMessages)
-                .Include(l => l.EmojiMessages)
-                .Include(t => t.ThemeMessages)
-                .Include(a => a.AudioMessages)
-                .Include(u => u.User)
-                .Where(m => reposts
-                            .Select(r => r.RepostMessageId)
-                            .Contains(m.MessageId))
-                .Select(MessageAutoMapper.ToDto);
+                    .ThenInclude(p => p.User)
+                .AsNoTracking()
+                .Where(m => reposts.Select(r => r.RepostMessageId).Contains(m.MessageId))
+                .ToListAsync();
 
-            var reportDtos = reposts.Select(RepostAutoMapper.ToDto);
+            var repostDtos = reposts.Select(RepostAutoMapper.ToDto).ToList();
+            var messageDtos = messages.Select(MessageAutoMapper.ToDto).ToList();
 
             return new OkObjectResult(new RepostMessage
             {
-                Reposts = reportDtos,
-                Messages = messages
+                Reposts = repostDtos,
+                Messages = messageDtos
             });
         }
+
 
         public async Task<IEnumerable<RepostDTO>> GetAllRepostsForUser()
         {

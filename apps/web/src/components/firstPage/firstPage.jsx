@@ -27,7 +27,7 @@ function FirstPage(){
                     <div className={`${gSt.leftSide} ${leaving ? gSt.leftSideLeave : ""}`}>
                         <img src={logo}
                              alt="Dumka Logo"
-                             className={gSt.logo}/>
+                             style={{margin: "40px -20px"}}/>
                         <div className={st.mainText}>
                             <h1>Привіт.</h1>
                             <p>Ти щойно зайшов у простір, де думки мають <br/> значення.</p>

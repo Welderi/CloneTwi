@@ -30,5 +30,9 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [Authorize]
         [HttpGet("getcountoffollowers/{userId?}")]
         public async Task<int> GetCountofFollowers([FromRoute] string? userId) => await _service.GetCountofFollowers(userId);
+
+        [Authorize]
+        [HttpGet("getcountoffollowing/{userId?}")]
+        public async Task<int> GetCountofFollowing([FromRoute] string? userId) => await _service.GetCountofFollowing(userId);
     }
 }

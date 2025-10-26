@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import {useState, useRef, useEffect} from "react";
 import createMessageAsync from "../messageController/createMessage";
 
 export function useMessageForm(message, isParent = true) {

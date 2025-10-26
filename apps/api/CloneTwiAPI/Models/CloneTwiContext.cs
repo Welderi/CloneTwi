@@ -74,16 +74,19 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Repost)
                 .WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.RepostId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Notification_Repost");
 
             entity.HasOne(d => d.Follow)
                 .WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.FollowId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Notification_Follow");
 
             entity.HasOne(d => d.Emoji)
                 .WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.EmojiId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Notification_Emoji");
         });
 
@@ -136,6 +139,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.EmojiMessageNavigation).WithMany(p => p.EmojiMessages)
                 .HasForeignKey(d => d.EmojiMessageId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Emoji_Message");
         });
 
@@ -181,10 +185,12 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.MessageParent).WithMany(p => p.InverseMessageParent)
                 .HasForeignKey(d => d.MessageParentId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Message_Parent");
 
             entity.HasOne(d => d.MessagePreviousVersion).WithMany(p => p.InverseMessagePreviousVersion)
                 .HasForeignKey(d => d.MessagePreviousVersionId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Message_PreviousVersion");
         });
 
@@ -201,7 +207,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.RepostMessage).WithMany(p => p.Reposts)
                 .HasForeignKey(d => d.RepostMessageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Repost_Message");
         });
 
@@ -216,6 +222,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.ThemeMessageNavigation).WithMany(p => p.ThemeMessages)
                 .HasForeignKey(d => d.ThemeMessageId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Theme_Message");
         });
 
@@ -229,6 +236,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.VideoMessageNavigation).WithMany(p => p.VideoMessages)
                 .HasForeignKey(d => d.VideoMessageId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Video_Message");
         });
 
@@ -245,7 +253,7 @@ public partial class CloneTwiContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.ViewMessage).WithMany(p => p.Views)
                 .HasForeignKey(d => d.ViewMessageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_View_Message");
         });
 

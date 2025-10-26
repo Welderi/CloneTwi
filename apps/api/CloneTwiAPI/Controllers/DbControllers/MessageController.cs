@@ -27,6 +27,11 @@ namespace CloneTwiAPI.Controllers.DbControllers
         => await _service.GetGroupedMessagesAsync(userId);
 
         [Authorize]
+        [HttpGet("getuserstories/{userId?}")]
+        public async Task<ActionResult<IEnumerable<MessageDTO>>> GetUserStories([FromRoute] string? userId)
+        => await _service.GetUserStories(userId);
+
+        [Authorize]
         [HttpGet("getstories")]
         public async Task<ActionResult<IEnumerable<MessageDTO>>> GetStories() => await _service.GetStories();
     }

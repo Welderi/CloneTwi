@@ -92,6 +92,9 @@ namespace CloneTwiAPI.Services
 
             var messageId = emoji.EmojiMessageId;
 
+            var notifications = _context.Notifications.Where(n => n.EmojiId == emojiId);
+            _context.Notifications.RemoveRange(notifications);
+
             var result = await RemoveAsync(entity: emoji);
 
             await NotifyClientsEmojiUpdate(messageId);

@@ -4,10 +4,10 @@ import SignalRUser from "../signalR/signalRUser";
 const useFollowController = (user) => {
     const [count, setCount] = useState(null);
     const [isFollowed, setIsFollowed] = useState(false);
+    const [followingCount, setFollowingCount] = useState(0);
 
     const followOrUnfollow = async (url) => {
         try {
-            console.log(user.id);
             await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -32,7 +32,11 @@ const useFollowController = (user) => {
     useEffect(() => {
         const getCountofFollowers = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/follow/getcountoffollowers/${user.id}`, {
+                const url = user?.id
+                    ? `http://localhost:5000/api/follow/getcountoffollowers/${user.id}`
+                    : `http://localhost:5000/api/follow/getcountoffollowers`;
+
+                const res = await fetch(url, {
                     method: "GET",
                     credentials: "include"
                 });
@@ -44,7 +48,28 @@ const useFollowController = (user) => {
         };
 
         getCountofFollowers();
-    }, [user.id]);
+    }, [user?.id]);
+
+    useEffect(() => {
+        const getCountofFollowing = async () => {
+            try {
+                const url = user?.id
+                    ? `http://localhost:5000/api/follow/getcountoffollowing/${user.id}`
+                    : `http://localhost:5000/api/follow/getcountoffollowing`;
+
+                const res = await fetch(url, {
+                    method: "GET",
+                    credentials: "include"
+                });
+                const data = await res.json();
+                setFollowingCount(data.followingCount ?? data);
+            } catch (err) {
+                console.log("Count of followers error: ", err);
+            }
+        };
+
+        getCountofFollowing();
+    }, [user?.id]);
 
     useEffect(() => {
         const fetchIsFollowed = async () => {
@@ -71,9 +96,9 @@ const useFollowController = (user) => {
         });
 
         return () => connection.stop();
-    }, [user.id]);
+    }, [user?.id]);
 
-    return { follow, unfollow, count, isFollowed };
+    return { follow, unfollow, count, isFollowed, followingCount };
 };
 
 export default useFollowController;

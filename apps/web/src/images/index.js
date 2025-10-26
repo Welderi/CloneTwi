@@ -7,13 +7,13 @@ import openEye from "./inUse/open_eye.svg";
 import closeEye from "./inUse/close_eye.svg";
 import google from "./login/google.svg";
 import undo from "./inUse/undo.svg";
-import search from "./inUse/Search.svg";
+import searchIcon from "./inUse/Search.svg";
 import profile from "./inUse/Profile.svg";
 import sun from "./inUse/Sun.svg";
 import following from "./inUse/Following.svg";
 import messaging from "./inUse/Messaging.svg";
 import add from "./inUse/Add.svg";
-import person from "./inUse/person.png";
+import person from "./inUse/person.svg";
 import book from "./message/book.svg";
 import music from "./message/music.svg";
 import favorite from "./message/favorite.svg";
@@ -27,9 +27,16 @@ import create from "./inUse/create.svg";
 import gear from "./inUse/gear.svg";
 import sparkles from "./inUse/sparkles.svg";
 import moon from "./inUse/moon.svg";
+import girl from "./inUse/girl.svg";
+import girl2 from "./inUse/girl2.png";
+import girl3 from "./inUse/girl3.png";
+import profileBack from "./inUse/ProfileBack.svg";
+import plane from "./inUse/plane.svg";
+import camera from "./inUse/Camera.svg";
 
 export {logo, sticker, grayBall, brownBall, whiteBall,
-        openEye, closeEye, google, undo, search, sun,
+        openEye, closeEye, google, undo, searchIcon, sun,
         profile, following, messaging, add, person, book,
         music, favorite, comment, repostIcon, more,
-        today, pin, picture, create, gear, sparkles, moon}
+        today, pin, picture, create, gear, sparkles, moon,
+        girl, girl2, girl3, profileBack, plane, camera}

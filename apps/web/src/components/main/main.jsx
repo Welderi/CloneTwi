@@ -1,227 +1,276 @@
-import React, {useMemo, useState} from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import MessageCard from "../messageCard/messageCard";
 import ControlMessages from "../messageController/controlMessages";
-import Select, {components} from "react-select";
 import Story from "../story/story";
-import {logo, sun, profile,
-        following, messaging, add,
-        create, gear, sparkles, pin,
-        moon} from "../../images";
-import { ReactComponent as SearchIcon } from "../../images/inUse/Search.svg";
+import { useTheme } from "../../context/ThemeContext";
+import {
+    logo, sun, profile,
+    following, messaging, add,
+    create, gear, sparkles, pin,
+    moon, person, searchIcon
+} from "../../images";
 import st from "./main.module.css";
-import {findAllByDisplayValue} from "@testing-library/dom";
+import SearchResults from "./searchResults";
 
 function Main() {
-    const {messages, emojis, users,
-          bookmarks, stories, reposts,
-          addMessages, notifications} = ControlMessages(null);
+    const {
+        messages = [],
+        emojis = [],
+        users = [],
+        bookmarks = [],
+        stories = [],
+        reposts = [],
+        addMessages = [],
+        notifications = []
+    } = ControlMessages(null);
+
     const [search, setSearch] = useState({ type: "", value: "" });
-    const [isDay, setIsDay] = useState(true);
+    const { isDay, setIsDay } = useTheme();
+    const [isNotOpen, setIsNotOpen] = useState(false);
+    const [viewMode, setViewMode] = useState("feeds");
+    const [showResults, setShowResults] = useState(false);
+    const [searchTab, setSearchTab] = useState("users");
 
-    const searchOptions = useMemo(() => {
-        const themes = Array.from(
-            new Set(messages?.flatMap(m => m.themes || []))
-        ).map(t => ({
-            label: t,
-            value: t,
-            type: "message"
-        })) || [];
+    const normalizedSearch = (search.value || "").trim().toLowerCase();
 
-        return [
-            ...(users?.map(u => ({ label: u.userName, value: u.userName, type: "user" })) || []),
-
-            ...(messages
-                ?.filter(m => m.messageParentId === null && m.messageText?.trim())
-                .map(m => ({
-                    label: m.messageText,
-                    value: m.messageText,
-                    type: "message"
-                })) || []),
-
-            ...themes
-        ];
-    }, [users, messages]);
-
-    const normalizedSearch = search.value.toLowerCase();
-
-    const filteredUsers = users.filter(user => {
-        if (!normalizedSearch || search.type !== "user") return true;
-        return user.userName?.toLowerCase().includes(normalizedSearch);
-    });
-
-    const CustomDropdownIndicator = (props) => {
-        return (
-            <components.DropdownIndicator {...props}>
-                <SearchIcon width={20} height={20} style={{ marginRight: '10px' }} />
-            </components.DropdownIndicator>
+    const baseMessages = useMemo(() => {
+        return (messages || []).filter(
+            msg => msg.messageParentId === null && (msg.isStory === false || msg.isStory === null)
         );
+    }, [messages]);
+
+    let filteredMessages = baseMessages;
+    if (normalizedSearch) {
+        const matched = baseMessages.filter(msg =>
+            (msg.messageText || "").toLowerCase().includes(normalizedSearch) ||
+            (msg.themes || []).some(t => t.toLowerCase().includes(normalizedSearch))
+        );
+
+        if (matched.length > 0) {
+            filteredMessages = matched;
+        } else {
+            filteredMessages = baseMessages;
+        }
+    }
+
+    const handleSelect = (item) => {
+        if (!item) return;
+        if (item.type === "message" || item.type === "theme") {
+            setSearch({ type: "message", value: item.value });
+        } else if (item.type === "user") {
+            setSearch({ type: "user", value: item.value });
+        }
+        setShowResults(false);
     };
-
-    const filteredMessages = messages
-        .filter(msg => msg.messageParentId === null && (msg.isStory === false || msg.isStory === null))
-        .filter(msg => {
-            if (!normalizedSearch || search.type !== "message") return true;
-            return (
-                msg.messageText?.toLowerCase().includes(normalizedSearch) ||
-                msg.themes?.some(theme =>
-                    theme.toLowerCase().includes(normalizedSearch)
-                )
-            );
-        });
-
-    const toggleTheme = () => {
-        setIsDay(!isDay);
-    };
-
-    console.log(notifications);
 
     return (
-        <div className={st.div}
-            style={{ backgroundColor: isDay ?
-                'rgba(250, 235, 205, 1)' :
-                'rgba(67, 67, 67, 1)',}}>
+        <div className={st.div}>
             <div>
                 <div className={st.leftWin}>
                     <div className={st.options}>
-                        <Link to={"/interests"}
-                              className={st.option}>
-                            <img src={sparkles} alt=""
-                                 />
+                        <Link to={"/interests"} className={st.option}>
+                            <img src={sparkles} alt=""/>
                             <p>Помічник</p>
                         </Link>
-                        <Link to={"/userProfile"}
-                              className={st.option}>
-                            <img src={profile} alt=""
-                                 />
+
+                        <Link to={"/userProfile"} className={st.option}>
+                            <img src={profile} alt=""/>
                             <p>Профіль</p>
                         </Link>
-                        <Link to={"/addPost"}
-                              className={st.option}>
-                            <img src={create} alt=""
-                                 />
+
+                        <Link to={"/addPost"} className={st.option}>
+                            <img src={create} alt=""/>
                             <p>Створити</p>
                         </Link>
-                        <Link
-                              className={st.option}>
-                            <img src={following} alt=""
-                                 />
-                            <p>Уподобайки</p>
-                        </Link>
-                        <Link to="/bookmarks"
-                              className={st.option}>
-                            <img src={pin} alt=""
-                                 />
+
+                        {/*<Link className={st.option}>*/}
+                        {/*    <img src={following} alt=""/>*/}
+                        {/*    <p>Уподобайки</p>*/}
+                        {/*</Link>*/}
+
+                        <Link to="/bookmarks" className={st.option}>
+                            <img src={pin} alt=""/>
                             <p>Збереження</p>
                         </Link>
-                        <Link to={"/additionalUserSettings"}
-                              className={st.option}>
-                            <img src={gear} alt=""
-                                 />
+
+                        <Link to={"/additionalUserSettings"} className={st.option}>
+                            <img src={gear} alt=""/>
                             <p>Налаштування</p>
                         </Link>
                     </div>
                 </div>
+
                 <div className={st.fidySnipy}>
-                    <p>Фіди</p>
-                    <hr/>
-                    <p>Сніпи</p>
+                    <p
+                        className={viewMode === "feeds" ? st.active : st.inactive}
+                        onClick={() => setViewMode("feeds")}
+                    >
+                        Фіди
+                    </p>
+
+                    <hr className={st.divider} />
+
+                    <p
+                        className={viewMode === "snips" ? st.active : st.inactive}
+                        onClick={() => setViewMode("snips")}
+                    >
+                        Сніпи
+                    </p>
                 </div>
-                <div>
-                    {notifications.map((n, index) => (
-                        <div key={index} style={{ width: "500px" }}>
-                            {n.follow ? (
-                                <li style={{ backgroundColor: "red" }} key={n.id}>
-                                    {n.user.username} follow
-                                </li>
-                            ) : n.repost ? (
-                                <li key={n.id}>{n.message.author} repost</li>
-                            ) : n.emoji ? (
-                                <div>
-                                    <li key={n.id}>{n.messageId} like</li>
-                                </div>
-                            ) : null}
-                        </div>
-                    ))}
-                </div>
-                <div className={st.head}>
-                    <img src={logo}
-                         alt="Dumka Logo"
-                         />
-                    <div>
-                        <Select
-                            options={searchOptions}
-                            className={st.container}
-                            classNamePrefix="search"
-                            components={{
-                                DropdownIndicator: CustomDropdownIndicator,
-                                IndicatorSeparator: () => null}}
-                            onChange={(selected) =>
-                                setSearch(selected ? { type: selected.type, value: selected.value } : { type: "", value: "" })}
-                            isClearable
-                            placeholder="Пошук"
-                        />
+
+                <div className={st.rightWin} style={{ visibility: isNotOpen ? "visible" : "hidden" }}>
+                    <div className={st.options}>
+                        {notifications.map((n, index) => (
+                            <div key={index} className={st.notifications}>
+                                {n.follow && (
+                                    <Link key={n.id} to={`/userProfile`} state={n.user}>
+                                        <div className={st.not}>
+                                            <div className={st.avDiv}>
+                                                <img
+                                                    src={n.user.profileImageUrl ? `http://localhost:5000${n.user.profileImageUrl}` : person}
+                                                    alt="person"
+                                                />
+                                            </div>
+                                            <div className={st.col}>
+                                                <p>{n.user.userName}</p>
+                                                <p>Приєднується до ваших оновлень</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                )}
+                                {n.repost && (
+                                    <Link key={n.id} to={`/userProfile`} state={n.user}>
+                                        <div className={st.not}>
+                                            <div className={st.avDiv}>
+                                                <img
+                                                    src={n.user.profileImageUrl ? `http://localhost:5000${n.user.profileImageUrl}` : person}
+                                                    alt="person"
+                                                />
+                                            </div>
+                                            <div className={st.col}>
+                                                <p>{n.user.userName}</p>
+                                                <p>Поширив(-ла) вашу думку</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                )}
+                                {n.emoji && (
+                                    <Link key={n.id} to={`/userProfile`} state={n.user}>
+                                        <div className={st.not}>
+                                            <div className={st.avDiv}>
+                                                <img
+                                                    src={n.user.profileImageUrl ? `http://localhost:5000${n.user.profileImageUrl}` : person}
+                                                    alt="person"
+                                                />
+                                            </div>
+                                            <div className={st.col}>
+                                                <p>{n.user.userName}</p>
+                                                <p>Вподобав(-ла) вашу думку</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                )}
+                            </div>
+                        ))}
                     </div>
+
+                    <div className={st.scrollFade}></div>
+                </div>
+
+                <div className={st.head}>
+                    <img src={logo} alt="Dumka Logo" />
+                    <div>
+                        <div className={st.searchWrapper} style={{ position: "relative" }}>
+                            <input
+                                type="text"
+                                value={search.value}
+                                onFocus={() => setShowResults(true)}
+                                onChange={(e) => {
+                                    setSearch({ type: "", value: e.target.value });
+                                    setShowResults(true);
+                                }}
+                                placeholder="Пошук"
+                                className={st.searchInput}
+                            />
+                            <img src={searchIcon} alt="Search" className={st.searchIcon} />
+                            {showResults && (
+                                <SearchResults
+                                    users={users}
+                                    messages={baseMessages}
+                                    query={search.value}
+                                    activeTab={searchTab}
+                                    onChangeTab={setSearchTab}
+                                    onClose={() => setShowResults(false)}
+                                    onSelect={(item) => handleSelect(item)}
+                                />
+                            )}
+                        </div>
+                    </div>
+
                     <nav className={st.icons}>
-                        <Link onClick={toggleTheme}>
+                        <Link onClick={() => setIsDay(!isDay)}>
                             <img src={isDay ? sun : moon}
-                                 alt="sun"/>
+                                 alt="theme"/>
                         </Link>
+
                         <Link to="/userProfile">
-                            <img src={profile}
-                                 alt="profile"/>
+                            <img src={profile} alt="profile" />
                         </Link>
+
                         <Link to="/addPost">
-                            <img src={add}
-                                 alt="profile"/>
+                            <img src={add} alt="add" />
                         </Link>
-                        <Link>
-                            <img src={following}
-                                 alt="profile"
-                                 />
-                        </Link>
-                        <Link>
-                            <img src={messaging}
-                                 alt="profile"
-                                 />
-                        </Link>
+
+                        {/*<Link>*/}
+                        {/*    <img src={following} alt="following" />*/}
+                        {/*</Link>*/}
+
+                        <div className={st.notificationWrapper}>
+                            <Link onClick={() => setIsNotOpen(prev => !prev)}>
+                                <img src={messaging} alt="messages"/>
+                                {notifications.length > 0 && (
+                                    <span className={st.badge}>{notifications.length}</span>
+                                )}
+                            </Link>
+                        </div>
+
                     </nav>
                 </div>
-                <nav>
-                    <Link to="/addStory">Add Story</Link>
-                </nav>
 
+                <br/>
 
-                {/*{filteredUsers.map(user => (*/}
-                {/*    <UserCard key={user.id} user={user} />*/}
-                {/*))}*/}
+                {viewMode === "snips" &&
+                    <div className={st.msgDiv}>
+                        <Story stories={stories} />
+                    </div>
+                }
 
-                {stories.map((story, index) => (
-                    <Story key={index} story={story} />
-                ))}
+                {viewMode === "feeds" &&
+                    <div className={st.msgDiv}>
+                        {addMessages?.messages?.map(msg => (
+                            <MessageCard
+                                key={msg.messageId}
+                                message={msg}
+                                emoji={emojis.filter(e => e.messageId === msg.messageId)}
+                                allEmojis={emojis}
+                                bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
+                                repostBool={reposts.some(e => e.messageId === msg.messageId)}
+                            />
+                        ))}
 
-                <div className={st.msgDiv}>
-                    {addMessages?.messages?.map(msg => (
-                        <MessageCard
-                            key={msg.messageId}
-                            message={msg}
-                            emoji={emojis.filter(e => e.messageId === msg.messageId)}
-                            allEmojis={emojis}
-                            bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
-                            repostBool={reposts.some(e => e.messageId === msg.messageId)}
-                        />
-                    ))}
-                    {filteredMessages.map(msg => (
-                        <MessageCard
-                            key={msg.messageId}
-                            message={msg}
-                            emoji={emojis.filter(e => e.messageId === msg.messageId)}
-                            allEmojis={emojis}
-                            bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
-                            repostBool={reposts.some(e => e.messageId === msg.messageId)}
-                        />
-                    ))}
-                </div>
+                        {filteredMessages.map(msg => (
+                            <MessageCard
+                                key={msg.messageId}
+                                message={msg}
+                                emoji={emojis.filter(e => e.messageId === msg.messageId)}
+                                allEmojis={emojis}
+                                bookmarkBool={bookmarks.some(e => e.messageId === msg.messageId)}
+                                repostBool={reposts.some(e => e.messageId === msg.messageId)}
+                            />
+                        ))}
+                    </div>
+                }
             </div>
         </div>
     );

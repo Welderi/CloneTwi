@@ -53,7 +53,14 @@ namespace CloneTwiAPI.Services
             var messages = await _context.Messages
                 .AsNoTracking()
                 .Where(m => messageIds.Contains(m.MessageId))
+                .Include(m => m.User)
+                .Include(m => m.VideoMessages)
+                .Include(m => m.AudioMessages)
+                .Include(m => m.EmojiMessages)
+                .Include(m => m.ThemeMessages)
+                .Include(m => m.InverseMessageParent)
                 .ToListAsync();
+
 
             var messageDtos = messages.Select(MessageAutoMapper.ToDto).ToList();
 

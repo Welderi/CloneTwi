@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body.day {
+  background: rgba(250, 235, 205, 1);
+  transition: all 0.3s ease;
+}
+
+body.night {
+  background: rgba(67, 67, 67, 1);
+  transition: all 0.5s ease;
+}
+

@@ -21,8 +21,8 @@ namespace CloneTwiAPI.Controllers.DbControllers
         [HttpPost("addrangeinterests")]
         public async Task<IActionResult> AddRangeInterest([FromBody] List<InterestDTO> dtos) => await _service.AddRangeInterests(dtos);
 
-        [HttpDelete("removeinterest/{topic}")]
-        public async Task<IActionResult> RemoveInterest([FromRoute] string topic) => await _service.RemoveInterest(topic);
+        [HttpDelete("removeinterest")]
+        public async Task<IActionResult> RemoveInterest([FromBody] string topic) => await _service.RemoveInterest(topic);
 
         [HttpGet("getpostsbyinterest")]
         public async Task<List<MessageDTO>> GetPostsByInterest()

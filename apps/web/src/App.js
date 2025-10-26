@@ -10,6 +10,9 @@ import FirstPage from "./components/firstPage/firstPage";
 import Bookmarks from "./components/bookmarks/bookmarks";
 import ManageInterests from "./components/manageInterests/manageInterests";
 import AddStory from "./components/addStory/addStory";
+import Age1 from "./components/globalStyle/age1";
+import Helper from "./components/globalStyle/helper";
+import Wait16 from "./components/globalStyle/wait16";
 
 function App() {
     return (
@@ -25,6 +28,9 @@ function App() {
                 <Route path="/interests" element={<ManageInterests />}/>
                 <Route path="/changePassword" element={<ChangePassword />} />
                 <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/age1" element={<Age1/>}/>
+                <Route path="/helper" element={<Helper/>}/>
+                <Route path="/wait16" element={<Wait16/>}/>
                 <Route path="/additionalUserSettings" element={<AdditionalUserSettings />} />
             </Routes>
         </BrowserRouter>
