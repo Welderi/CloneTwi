@@ -80,8 +80,8 @@ function ManageInterests(){
                      alt="Dumka Logo"
                 />
                 <div className={st.hText}>
-                    <h1>Сформуй свою срічку</h1>
-                    <p style={{margin: "-15px 5px"}}>Обирай, що тобі до душі</p>
+                    <h1>Sestav svůj feed</h1>
+                    <p style={{margin: "-15px 5px"}}>Vyber, co tě zajímá</p>
                 </div>
                 <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
                     <Balls vertical={true}/>
@@ -114,7 +114,7 @@ function ManageInterests(){
                     <div className={`${st.trWindow} ${gSt.trWindow}`}>
                         {hoveredTheme && (
                             <div className={st.itemsList}>
-                                <p>Про:</p>
+                                <p>O tématu:</p>
                                 <div className={st.item}>
                                     {THEMES[hoveredTheme].map((item) => (
                                         <p key={item}>{item}</p>
@@ -130,36 +130,36 @@ function ManageInterests(){
                     </div>
                 </div>
             </div>
-                <div className={st.buttonList}>
-                    <Link to={'/helper'}>
-                        <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
-                                style={{
-                                    width: "215px",
-                                    height: "40px"
-                                }}>
-                            <img src={undo}
-                                 alt=""/>Думку змінено
-                        </button>
-                    </Link>
+            <div className={st.buttonList}>
+                <Link to={'/helper'}>
+                    <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
+                            style={{
+                                width: "215px",
+                                height: "40px"
+                            }}>
+                        <img src={undo}
+                             alt=""/>Myšlenka změněna
+                    </button>
+                </Link>
+                <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
+                        style={{
+                            width: "215px",
+                            height: "40px"
+                        }}
+                        onClick={resetSelection}>
+                    Obnovit výběr
+                </button>
+                <Link to={'/main'}>
                     <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
                             style={{
                                 width: "215px",
                                 height: "40px"
                             }}
-                            onClick={resetSelection}>
-                        Скинути вибір
+                            onClick={addInterest}>
+                        Můj výběr je hotový
                     </button>
-                    <Link to={'/main'}>
-                        <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
-                                style={{
-                                    width: "215px",
-                                    height: "40px"
-                                }}
-                                onClick={addInterest}>
-                            Мій вибір готовий
-                        </button>
-                    </Link>
-                </div>
+                </Link>
+            </div>
         </div>
     );
 }

@@ -43,7 +43,7 @@ function Login(){
                     const allMessages = Object.values(result.errors).flat();
                     setMessage(allMessages.join(". "));
                 } else {
-                    setMessage(result.title || "Сталася помилка");
+                    setMessage(result.title || "Došlo k chybě");
                 }
             } else {
                 navigate("/main");
@@ -57,43 +57,42 @@ function Login(){
         <div className={gSt.div}>
             <div className={`${st.mainDiv}`}>
                 <img src={logo}
-                     alt="Dumka Logo"
-                     
+                     alt="Myšlenka Logo"
                      className={gSt.logo}/>
-                <h1 className={`${st.h1}`}>Увійди, щоб продовжити бути голосом змін</h1>
+                <h1 className={`${st.h1}`}>Přihlas se a pokračuj jako hlas změny</h1>
                 <div className={`${gSt.centerDiv}`}>
                     <div className={`${gSt.trWindow} ${st.trWindow}`}>
                         <input type="text"
                                className={`${gSt.input}`}
                                value={usernameEmail}
-                               placeholder={"Електронна пошта / Ім'я користувача"}
+                               placeholder={"E-mail / Uživatelské jméno"}
                                onChange={(e) => setUsernameEmail(e.target.value)}/>
                         <div className={`${gSt.password}`}>
                             <input type={showPassword ? "text" : "password"}
                                    className={`${gSt.input}`}
                                    value={password}
-                                   placeholder={"Пароль"}
+                                   placeholder={"Heslo"}
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <span
                                 onClick={() => setShowPassword(!showPassword)}>
                                 <img
                                     src={showPassword ? closeEye : openEye}
-                                    alt="Password visibility"
+                                    alt="Zobrazení hesla"
                                     className={gSt.eyeImg}
                                 />
                             </span>
                         </div>
                         <p className={gSt.error}>{message}</p>
                         <button onClick={login}
-                                className={`${gSt.blueBtn} ${st.loginBtn}`}>Увійти</button>
-                        {/*<p style={{fontWeight: "bolder",*/}
-                        {/*           fontSize: "14px"}}>aбо</p>*/}
-                        {/*<button*/}
-                        {/*    className={`${gSt.trBtn} ${st.googleBtn}`}*/}
-                        {/*    onClick={() => window.location.href = "http://localhost:5000/api/auth/google-login"}*/}
-                        {/*>*/}
-                        {/*    Google <img src={google} alt="google"/>*/}
-                        {/*</button>*/}
+                                className={`${gSt.blueBtn} ${st.loginBtn}`}>Přihlásit se</button>
+                        {/*<p style={{fontWeight: "bolder",*/ }
+                        {/*           fontSize: "14px"}}>nebo</p>*/ }
+                        {/*<button*/ }
+                        {/*    className={`${gSt.trBtn} ${st.googleBtn}`}*/ }
+                        {/*    onClick={() => window.location.href = "http://localhost:5000/api/auth/google-login"}*/ }
+                        {/*>*/ }
+                        {/*    Google <img src={google} alt="google"/>*/ }
+                        {/*</button>*/ }
 
                     </div>
                     <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
@@ -101,8 +100,9 @@ function Login(){
                     </div>
                 </div>
                 <Link to={"/"}>
-                    <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
-                    ><img src={undo} alt=""/>Думку змінено</button>
+                    <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}>
+                        <img src={undo} alt=""/>Myšlenka změněna
+                    </button>
                 </Link>
             </div>
         </div>

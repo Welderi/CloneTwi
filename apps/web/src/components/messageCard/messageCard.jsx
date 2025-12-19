@@ -27,7 +27,6 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
     const [nickOffset, setNickOffset] = useState(15);
 
     const [isPlaying, setIsPlaying] = useState(false);
-    // const audioRef = useRef(null);
 
     const toggleAudio = () => {
         if (!audioRef.current) return;
@@ -39,7 +38,6 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
         }
         setIsPlaying(!isPlaying);
     };
-
 
     useEffect(() => {
         if (prefixRef.current) {
@@ -86,7 +84,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                                     ? person
                                     : `http://localhost:5000${user.profileImageUrl}`
                             }
-                            alt="person"
+                            alt="uživatel"
                         />
                     </div>
                 </Link>
@@ -103,8 +101,10 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                                         onEnded={() => setIsPlaying(false)}
                                     />
                                     <div style={{ display: "flex", gap: "5px" }}>
-                                        <img src={music} alt="music" />
-                                        <p className={st.musicText}>{message.audioMessageTo.fileName}</p>
+                                        <img src={music} alt="hudba" />
+                                        <p className={st.musicText}>
+                                            {message.audioMessageTo.fileName}
+                                        </p>
                                     </div>
                                     <p
                                         style={{
@@ -114,8 +114,8 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                                         }}
                                     >
                                         {isPlaying
-                                            ? "Натисни, щоб вимкнути звук"
-                                            : "Натисни, щоб почути мелодію"}
+                                            ? "Klikni pro vypnutí zvuku"
+                                            : "Klikni pro přehrání melodie"}
                                     </p>
                                 </div>
                             </button>
@@ -123,8 +123,11 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                     )}
                 </div>
                 <div>
-                    <button className={st.more} onClick={() => setOpen((prev) => !prev)}>
-                        <img src={more} alt="more" />
+                    <button
+                        className={st.more}
+                        onClick={() => setOpen((prev) => !prev)}
+                    >
+                        <img src={more} alt="více" />
                     </button>
                 </div>
             </div>
@@ -146,15 +149,12 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                             user={user}
                             isItMe={isItMe}
                             onClose={() => setOpen(false)}
-                        ></More>
+                        />
                     </div>
                 )}
 
                 <div>
-                    <img
-                        src={book}
-                        alt="book"
-                    />
+                    <img src={book} alt="text" />
                     <p className={st.msgText}>{message.messageText}</p>
                 </div>
 
@@ -164,7 +164,9 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                     message.parents &&
                     message.parents.map((msg, index) => {
                         const currentEmoji =
-                            allEmojis?.filter((e) => e.messageId === msg.messageId) || [];
+                            allEmojis?.filter(
+                                (e) => e.messageId === msg.messageId
+                            ) || [];
                         return (
                             <div key={`${msg.messageId}-${index}`}>
                                 <CommentCard
@@ -182,7 +184,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                     <Emoji emoji={emoji} message={message} />
 
                     <button onClick={changeArrowState} className={st.comment}>
-                        <img src={comment} alt="comment" />
+                        <img src={comment} alt="komentáře" />
                     </button>
 
                     <div className={st.inputTextWrapper}>
@@ -196,20 +198,26 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                             value={messageText}
                             onChange={(e) => setMessageText(e.target.value)}
                             onKeyDown={(e) => {
-                                if (e.key === "Backspace" && messageText === "" && onReply) {
+                                if (
+                                    e.key === "Backspace" &&
+                                    messageText === "" &&
+                                    onReply
+                                ) {
                                     setOnReply(null);
                                 }
                             }}
-                            placeholder="Залишити свою думку"
+                            placeholder="Napiš svůj názor"
                             className={st.inputText}
                             style={{
-                                paddingLeft: onReply ? `${nickOffset}px` : "15px",
+                                paddingLeft: onReply
+                                    ? `${nickOffset}px`
+                                    : "15px",
                             }}
                         />
                         {(messageText || videoImage) && (
                             <img
                                 src={plane}
-                                alt=""
+                                alt="odeslat"
                                 onClick={() => {
                                     addParentMessage();
                                     setOnReply(null);
@@ -230,7 +238,7 @@ function MessageCard({ message, emoji, allEmojis, bookmarkBool, repostBool }) {
                         />
                         <img
                             src={picture}
-                            alt="Upload"
+                            alt="nahrát"
                             onClick={() => inputRef.current.click()}
                         />
                     </div>

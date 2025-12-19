@@ -4,10 +4,10 @@ namespace CloneTwiAPI.DTOs
 {
     public class LoginDTO
     {
-        [Required(ErrorMessage = "Неправильне ім'я користувача або електронна пошта")]
+        [Required(ErrorMessage = "Neplatné uživatelské jméno nebo e-mail")]
         public string UserNameEmail { get; set; }
 
-        [Required(ErrorMessage = "Необхідно ввести пароль")]
+        [Required(ErrorMessage = "Je nutné zadat heslo")]
         public string Password { get; set; }
     }
 }

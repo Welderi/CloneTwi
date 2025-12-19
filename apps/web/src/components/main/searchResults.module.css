@@ -1,8 +1,7 @@
 .searchResults {
     position: absolute;
     top: 42px;
-    left: -25px;
-    right: 0;
+    right: -115px;
     /*max-width: 720px;*/
     width: 580px;
     margin: 8px auto 0;

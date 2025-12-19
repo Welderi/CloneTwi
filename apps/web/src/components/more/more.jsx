@@ -48,7 +48,6 @@ function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
 
     return (
         <div className={st.wrapper}>
-            {/* крестик закрытия */}
             <button className={st.closeBtn} onClick={onClose}>
                 ×
             </button>
@@ -66,9 +65,13 @@ function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
                 >
                     <div className={st.hover}>
                         <div className={st.circle}>
-                            {!bookmark ? <img src={pin} alt="pin" /> : <img src={today} alt="today" />}
+                            {!bookmark ? (
+                                <img src={pin} alt="uložit" />
+                            ) : (
+                                <img src={today} alt="uloženo" />
+                            )}
                         </div>
-                        <p>Зберегти</p>
+                        <p>Uložit</p>
                     </div>
                 </button>
 
@@ -86,7 +89,7 @@ function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
                         <div className={st.circle}>
                             <img src={repostIcon} alt="repost" />
                         </div>
-                        <p>Репост</p>
+                        <p>Repost</p>
                     </div>
                 </button>
             </div>
@@ -97,7 +100,9 @@ function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
                         className={st.textButton}
                         onClick={isFollowed ? unfollow : follow}
                     >
-                        {isFollowed ? "Від'єднатися від оновлень" : "Доєднатися до оновлень"}
+                        {isFollowed
+                            ? "Přestat sledovat"
+                            : "Začít sledovat"}
                     </button>
                 )}
 
@@ -106,7 +111,7 @@ function More({ message, bookmarkBool, repostBool, user, isItMe, onClose }) {
                     state={isItMe ? null : user}
                     className={st.textButton}
                 >
-                    Про користувача
+                    O uživateli
                 </Link>
             </div>
         </div>

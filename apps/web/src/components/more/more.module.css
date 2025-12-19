@@ -67,6 +67,9 @@
     min-width: 300px;
     max-width: 480px;
     height: auto;
+
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .topRow {

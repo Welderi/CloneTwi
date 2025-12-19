@@ -27,14 +27,14 @@ services:
     volumes:
       # - ~/.nuget/packages:/root/.nuget/packages
       - ./apps/api/CloneTwiAPI:/app
-      
+
   web:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
     volumes:
-      - ./apps/web:/app    
-      - /app/node_modules            
+      - ./apps/web:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -42,9 +42,9 @@ services:
       - WATCHPACK_POLLING=true
     depends_on:
       - api
-      
+
   sqltools:
-    image: mcr.microsoft.com/mssql-tools
+    image: mcr.microsoft.com/mssql-tools:latest
     container_name: sqltools
     depends_on:
       - sqlserver
@@ -52,7 +52,7 @@ services:
       - ./apps/sql-server:/var/backup
     entrypoint: >
       bash -c "
-        sleep 20 && 
+        sleep 30 && 
         /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P '1234567890Qwerty!' -i /var/backup/init.sql &&
         sleep infinity
       "

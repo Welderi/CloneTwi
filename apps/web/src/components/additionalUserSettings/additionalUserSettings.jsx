@@ -21,7 +21,9 @@ function AdditionalUserSettings() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const data = await fetchMethodGet("http://localhost:5000/api/user/getuserinfo");
+            const data = await fetchMethodGet(
+                "http://localhost:5000/api/user/getuserinfo"
+            );
             setUser(data);
             if (data?.bio) setBio(data.bio);
             if (data?.profileImageUrl)
@@ -68,22 +70,30 @@ function AdditionalUserSettings() {
     };
 
     if (!user) {
-        return <p>Loading user...</p>;
+        return <p>Načítání uživatele…</p>;
     }
 
     return (
-        <div style={{ overflow: "hidden", position: "relative", backgroundColor: "rgba(248, 248, 248, 1)" }}>
-            <WebBalls/>
-            <img src={logo} alt="logo" style={{margin: "40px"}} />
-            <div style={{margin: "0px 100px"}}>
-                <h1>Твій профіль</h1>
-                <p>Твій профіль у стартовому режимі. Додай аватарку, фон і цитату, щоб він став по-справжньому твоїм</p>
+        <div
+            style={{
+                overflow: "hidden",
+                position: "relative",
+                backgroundColor: "rgba(248, 248, 248, 1)"
+            }}
+        >
+            <WebBalls />
+            <img src={logo} alt="logo" style={{ margin: "40px" }} />
+            <div style={{ margin: "0px 100px" }}>
+                <h1>Tvůj profil</h1>
+                <p>
+                    Tvůj profil ve výchozím režimu. Přidej avatar, pozadí a citát,
+                    aby byl skutečně tvůj
+                </p>
             </div>
-            <div className={stI.card}
-                 style={{ position: "relative"}}>
+            <div className={stI.card} style={{ position: "relative" }}>
                 <img
                     src={backgroundPreview || profileBack}
-                    alt="background"
+                    alt="pozadí"
                     className={`${st.back}`}
                 />
                 <div
@@ -97,8 +107,7 @@ function AdditionalUserSettings() {
                         zIndex: "3"
                     }}
                 >
-                    <img src={camera}
-                         alt="background"/>
+                    <img src={camera} alt="pozadí" />
                 </div>
 
                 <input
@@ -112,7 +121,7 @@ function AdditionalUserSettings() {
                 <div className={st.profile}>
                     <img
                         src={previewUrl || person}
-                        alt="Profile"
+                        alt="Profil"
                         className={st.profileImg}
                         onClick={() => fileInputAvatarRef.current.click()}
                         style={{ cursor: "pointer" }}
@@ -171,33 +180,38 @@ function AdditionalUserSettings() {
                                 <strong style={{ visibility: bio ? "visible" : "hidden" }}>
                                     "
                                 </strong>
-                                    {bio || "Виберіть біо"}
+                                {bio || "Vyber bio"}
                                 <strong style={{ visibility: bio ? "visible" : "hidden" }}>
                                     "
                                 </strong>
                             </p>
                         )}
 
-
                         <p>
-                            Моїх робіт:
+                            Moje příspěvky:
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            Читачі:
+                            Sledující:
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            Читаю:
+                            Sleduji:
                         </p>
                     </div>
                 </div>
             </div>
-            <div style={{display: "flex", justifyContent: "space-around", margin: "100px 0 50px 0"}}>
-                <Link to="/login" className={gSt.blueBtn} style={{padding: "10px"}}>
-                    Увійти в інший акаунт
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    margin: "100px 0 50px 0"
+                }}
+            >
+                <Link to="/login" className={gSt.blueBtn} style={{ padding: "10px" }}>
+                    Přihlásit se do jiného účtu
                 </Link>
-                <Link to="/register" className={gSt.blueBtn} style={{padding: "10px"}}>
-                    Зареєструвати інший акаунт
+                <Link to="/register" className={gSt.blueBtn} style={{ padding: "10px" }}>
+                    Zaregistrovat jiný účet
                 </Link>
-                <Link to="/changePassword" className={gSt.blueBtn} style={{padding: "10px"}}>
-                    Змінити пароль
+                <Link to="/changePassword" className={gSt.blueBtn} style={{ padding: "10px" }}>
+                    Změnit heslo
                 </Link>
             </div>
         </div>

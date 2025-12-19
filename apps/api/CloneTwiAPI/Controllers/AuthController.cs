@@ -35,15 +35,15 @@ namespace CloneTwiAPI.Controllers
         {
             var authResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
             if (!authResult.Succeeded)
-                return BadRequest("Не вдалося авторизуватися через Google");
+                return BadRequest("");
 
             var email = authResult.Principal?.FindFirst(ClaimTypes.Email)?.Value;
             if (email == null)
-                return BadRequest("Не вдалося отримати email користувача");
+                return BadRequest("");
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return Unauthorized("Користувач не існує");
+                return Unauthorized("");
 
             var token = _generateToken.GenerateJwtToken(user);
 

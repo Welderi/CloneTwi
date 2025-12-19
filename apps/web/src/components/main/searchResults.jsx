@@ -62,28 +62,28 @@ function SearchResults({
                     className={activeTab === "users" ? st.active : ""}
                     onClick={() => onChangeTab?.("users")}
                 >
-                    Облікові записи
+                    Účty
                 </button>
 
                 <button
                     className={activeTab === "messages" ? st.active : ""}
                     onClick={() => onChangeTab?.("messages")}
                 >
-                    Фіди
+                    Feedy
                 </button>
 
                 <button
                     className={activeTab === "themes" ? st.active : ""}
                     onClick={() => onChangeTab?.("themes")}
                 >
-                    Слова-ключі
+                    Klíčová slova
                 </button>
 
                 {/*<button*/}
                 {/*    className={activeTab === "locations" ? st.active : ""}*/}
                 {/*    onClick={() => onChangeTab?.("locations")}*/}
                 {/*>*/}
-                {/*    Локації*/}
+                {/*    Lokace*/}
                 {/*</button>*/}
             </div>
 
@@ -91,7 +91,7 @@ function SearchResults({
                 {activeTab === "users" && (
                     <>
                         {filteredUsers.length === 0 ? (
-                            <div className={st.empty}>Нічого не знайдено</div>
+                            <div className={st.empty}>Nic nenalezeno</div>
                         ) : (
                             filteredUsers.map(user => (
                                 <Link
@@ -121,7 +121,7 @@ function SearchResults({
                 {activeTab === "messages" && (
                     <>
                         {filteredMessages.length === 0 ? (
-                            <div className={st.empty}>Нічого не знайдено</div>
+                            <div className={st.empty}>Nic nenalezeno</div>
                         ) : (
                             filteredMessages.map(msg => (
                                 <div
@@ -149,7 +149,7 @@ function SearchResults({
                 {activeTab === "themes" && (
                     <>
                         {filteredThemes.length === 0 ? (
-                            <div className={st.empty}>Нічого не знайдено</div>
+                            <div className={st.empty}>Nic nenalezeno</div>
                         ) : (
                             filteredThemes.map((theme, i) => (
                                 <div
@@ -168,7 +168,7 @@ function SearchResults({
                 )}
 
                 {/*{activeTab === "locations" && (*/}
-                {/*    <div className={st.empty}>Локацій поки немає</div>*/}
+                {/*    <div className={st.empty}>Žádné lokace zatím nejsou</div>*/}
                 {/*)}*/}
             </div>
         </div>

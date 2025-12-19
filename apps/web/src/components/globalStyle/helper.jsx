@@ -24,9 +24,9 @@ function Helper(){
                  }}
                  alt=""/>
             <div className={st.main}>
-                <h1>Твій теперішній помічник — Варяна</h1>
-                <p style={{margin: "-15px 5px"}}>Вона допоможе тобі у роботі з нашим
-                        сервісом та зробить усе трішки веселіше 🌟</p>
+                <h1>Tvůj současný asistent — Varyana</h1>
+                <p style={{margin: "-15px 5px"}}>Pomůže ti s prací v našem
+                    servisu a vše trochu zpříjemní 🌟</p>
 
                 <div className={st.together}
                      style={{
@@ -36,9 +36,9 @@ function Helper(){
                         <ul style={{
                             fontSize: "23px"
                         }}>
-                            <li>Дружня, спокійна, уважна до деталей</li>
-                            <li>Завжди готова підказати або <br/> підтримати</li>
-                            <li>Має легке почуття гумору, щоб <br/> розрядити атмосферу</li>
+                            <li>Přátelská, klidná, pozorná k detailům</li>
+                            <li>Vždy připravena poradit nebo <br/> podpořit</li>
+                            <li>Má lehký smysl pro humor, aby <br/> uvolnila atmosféru</li>
                         </ul>
                         <Link to={'/interests'}>
                             <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
@@ -46,7 +46,7 @@ function Helper(){
                                         width: "150px",
                                         height: "40px"
                                     }}>
-                                Далі
+                                Dále
                             </button>
                         </Link>
                     </div>
@@ -61,7 +61,7 @@ function Helper(){
                             zIndex: "3"
                         }}>
                     <img src={undo}
-                         alt=""/>Думку змінено
+                         alt=""/>Myšlenka změněna
                 </button>
             </Link>
         </div>

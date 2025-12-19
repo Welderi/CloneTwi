@@ -70,7 +70,7 @@ function CommentCard({ message, emoji, allEmojis, first, onReply }) {
                 onClick={() => onReply && onReply(message)}
                 className={mSt.reply}
             >
-                Відповісти
+                Odpovědět
             </button>
 
             {message.parents &&

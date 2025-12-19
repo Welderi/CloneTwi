@@ -6,15 +6,13 @@ import THEMES from "../themes/themes";
 import Balls from "../animation/animation";
 import gSt from "../globalStyle/globalStyle.module.css";
 import st from "./addPost.module.css";
-import {undo} from "../../images";
-import {Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { undo } from "../../images";
+import { Link, useNavigate } from "react-router-dom";
 
 function AddPost() {
     const navigate = useNavigate();
 
     const [messageText, setMessageText] = useState("");
-    // const [message, setMessage] = useState("");
     const [videoImage, setVideoImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [allThemes, setAllThemes] = useState(Object.keys(THEMES));
@@ -25,22 +23,31 @@ function AddPost() {
         setVideoImage(Array.from(e.target.files));
     };
 
+    useEffect(() => {
+        if (isStory) {
+            setMessageText("");
+            setAudio(null);
+            setSelectedThemes([]);
+        }
+    }, [isStory]);
+
     const createMessage = async () => {
+        if (isStory && (!videoImage || videoImage.length === 0)) {
+            alert("Story musí obsahovat foto nebo video");
+            return;
+        }
+
         const messageForm = {
             isParent: false,
-            messageText,
+            messageText: isStory ? "" : messageText,
             messageParentId: null,
             videoImage,
-            audioMessage: audio,
+            audioMessage: isStory ? null : audio,
             isStory,
-            themes: selectedThemes.map((t) => t.value),
+            themes: isStory ? [] : selectedThemes.map((t) => t.value),
         };
 
         const result = await createMessageAsync(messageForm);
-        // setMessage(result);
-
-        // console.log(result)
-
         if (result && !result.errors) {
             navigate("/main");
         }
@@ -48,7 +55,9 @@ function AddPost() {
 
     useEffect(() => {
         const getAllThemes = async () => {
-            const data = await fetchMethodGet("http://localhost:5000/api/theme/getallthemes");
+            const data = await fetchMethodGet(
+                "http://localhost:5000/api/theme/getallthemes"
+            );
             setAllThemes((prev) => [...new Set([...prev, ...data])]);
         };
         getAllThemes();
@@ -62,23 +71,47 @@ function AddPost() {
     return (
         <div className={gSt.div}>
             <div className={`${st.mainDiv} ${st.formWrapper}`}>
-                <h1 className={st.h1}>Створи свій пост</h1>
-                <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
-                    <Balls vertical={true} />
+
+                <div className={st.header}>
+                    <h1 className={st.h1}>Vytvoř svůj příspěvek</h1>
+
+                    <div className={st.storyToggle}>
+                        <span>Post</span>
+                        <label className={st.switch}>
+                            <input
+                                type="checkbox"
+                                checked={isStory}
+                                onChange={(e) => setIsStory(e.target.checked)}
+                            />
+                            <span className={st.slider}></span>
+                        </label>
+                        <span>Story</span>
+                    </div>
                 </div>
-                <div className={`${gSt.centerDiv}`}>
+
+                <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
+                    <Balls vertical />
+                </div>
+
+                <div className={gSt.centerDiv}>
                     <div className={`${gSt.trWindow} ${st.trWindow}`}>
-                        <input
-                            type="text"
-                            className={gSt.input}
-                            value={messageText}
-                            placeholder="Що нового?"
-                            onChange={(e) => setMessageText(e.target.value)}
-                        />
+
+                        {!isStory && (
+                            <input
+                                type="text"
+                                className={gSt.input}
+                                value={messageText}
+                                placeholder="Co je nového?"
+                                onChange={(e) => setMessageText(e.target.value)}
+                            />
+                        )}
 
                         <div className={st.fileWrapper}>
-                            <label htmlFor="videoImage" className={`${gSt.blueBtn} ${st.fileBtn}`}>
-                                Завантажити фото/відео
+                            <label
+                                htmlFor="videoImage"
+                                className={`${gSt.blueBtn} ${st.fileBtn}`}
+                            >
+                                Nahraj foto/video
                             </label>
                             <input
                                 id="videoImage"
@@ -89,51 +122,54 @@ function AddPost() {
                                 multiple
                             />
 
-                            <label htmlFor="audioFile" className={`${gSt.blueBtn} ${st.fileBtn}`}>
-                                Завантажити аудіо
-                            </label>
-                            <input
-                                id="audioFile"
-                                type="file"
-                                className={st.hiddenInput}
-                                onChange={(e) => setAudio(e.target.files[0])}
-                                accept="audio/*"
-                            />
+                            {!isStory && (
+                                <>
+                                    <label
+                                        htmlFor="audioFile"
+                                        className={`${gSt.blueBtn} ${st.fileBtn}`}
+                                    >
+                                        Nahraj audio
+                                    </label>
+                                    <input
+                                        id="audioFile"
+                                        type="file"
+                                        className={st.hiddenInput}
+                                        onChange={(e) =>
+                                            setAudio(e.target.files[0])
+                                        }
+                                        accept="audio/*"
+                                    />
+                                </>
+                            )}
                         </div>
 
-                        <div className={st.storyCheck}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={isStory}
-                                    onChange={(e) => setIsStory(e.target.checked)}
+                        {!isStory && (
+                            <div className={st.selectWrapper}>
+                                <CreatableSelect
+                                    isMulti
+                                    options={themeOptions}
+                                    value={selectedThemes}
+                                    onChange={setSelectedThemes}
+                                    placeholder="Vyber nebo vytvoř"
                                 />
-                                Додати у сторіс
-                            </label>
-                        </div>
+                            </div>
+                        )}
 
-                        <div className={st.selectWrapper}>
-                            <CreatableSelect
-                                isMulti
-                                options={themeOptions}
-                                value={selectedThemes}
-                                onChange={setSelectedThemes}
-                                placeholder="Вибери або створи"
-                                noOptionsMessage={() => "Немає варіантів"}
-                            />
-                        </div>
-
-                        {/*{message && <p className={gSt.error}>{message}</p>}*/}
-
-                        <button onClick={createMessage} className={`${gSt.blueBtn} ${st.createBtn}`}>
-                            Створити
+                        <button
+                            onClick={createMessage}
+                            className={`${gSt.blueBtn} ${st.createBtn}`}
+                        >
+                            Vytvořit
                         </button>
                     </div>
                 </div>
             </div>
-            <Link to={"/main"}>
-                <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
-                ><img src={undo} alt=""/>Думку змінено</button>
+
+            <Link to="/main">
+                <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}>
+                    <img src={undo} alt="" />
+                    Myšlenka změněna
+                </button>
             </Link>
         </div>
     );

@@ -38,15 +38,15 @@ function ChangePassword() {
             }
 
             if (!response.ok) {
-                setMessage(typeof result === "string" ? result : result.title || "Сталася помилка");
+                setMessage(typeof result === "string" ? result : result.title || "Došlo k chybě");
             } else {
-                setMessage("Пароль успішно змінено!");
+                setMessage("Heslo bylo úspěšně změněno!");
                 setPassword("");
                 setNewPassword("");
             }
         } catch (err) {
             console.error(err);
-            setMessage("Сталася помилка при зміні паролю");
+            setMessage("Došlo k chybě při změně hesla");
         }
     }
 
@@ -54,7 +54,7 @@ function ChangePassword() {
         <div className={gSt.div}>
             <div className={`${st.mainDiv}`}>
                 <img src={logo} alt="Dumka Logo" className={gSt.logo}/>
-                <h1 className={`${st.h1}`}>Змініть свій пароль</h1>
+                <h1 className={`${st.h1}`}>Změňte své heslo</h1>
                 <div className={`${gSt.centerDiv}`} style={{marginBottom: "50px"}}>
                     <div className={`${gSt.trWindow} ${st.trWindow}`}>
                         <div className={`${gSt.password}`}>
@@ -62,13 +62,13 @@ function ChangePassword() {
                                 type={showPassword ? "text" : "password"}
                                 className={`${gSt.input}`}
                                 value={password}
-                                placeholder={"Поточний пароль"}
+                                placeholder={"Aktuální heslo"}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <span onClick={() => setShowPassword(!showPassword)}>
                                 <img
                                     src={showPassword ? closeEye : openEye}
-                                    alt="Toggle password"
+                                    alt="Zobrazit/skrýt heslo"
                                     className={gSt.eyeImg}
                                 />
                             </span>
@@ -78,13 +78,13 @@ function ChangePassword() {
                                 type={showNewPassword ? "text" : "password"}
                                 className={`${gSt.input}`}
                                 value={newPassword}
-                                placeholder={"Новий пароль"}
+                                placeholder={"Nové heslo"}
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
                             <span onClick={() => setShowNewPassword(!showNewPassword)}>
                                 <img
                                     src={showNewPassword ? closeEye : openEye}
-                                    alt="Toggle new password"
+                                    alt="Zobrazit/skrýt nové heslo"
                                     className={gSt.eyeImg}
                                 />
                             </span>
@@ -94,7 +94,7 @@ function ChangePassword() {
                             onClick={changePassword}
                             className={`${gSt.blueBtn} ${st.loginBtn}`}
                         >
-                            Змінити пароль
+                            Změnit heslo
                         </button>
                     </div>
                     <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>

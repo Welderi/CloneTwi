@@ -43,7 +43,7 @@ function Register(){
             }
 
             if (!rules) {
-                setMessage("Підтвердіть погодження з правилами");
+                setMessage("Potvrďte souhlas s pravidly platformy");
                 return;
             }
 
@@ -54,7 +54,7 @@ function Register(){
                     const allMessages = Object.values(result.errors).flat();
                     setMessage(allMessages.join(". "));
                 } else {
-                    setMessage(result.title || "Сталася помилка");
+                    setMessage(result.title || "Došlo k chybě");
                 }
             } else {
                 await fetch("http://localhost:5000/api/user/login", {
@@ -80,32 +80,31 @@ function Register(){
         <div className={gSt.div}>
             <div className={`${st.mainDiv}`}>
                 <img src={logo}
-                     alt="Dumka Logo"
-                     
+                     alt="Myšlenka Logo"
                      className={gSt.logo}/>
-                <h1 className={`${st.h1}`}>Зареєструйся, щоб бути частиною спільноти думок</h1>
-                <p className={`${st.h1}`}>Нова думка — новий крок</p>
+                <h1 className={`${st.h1}`}>Zaregistrujte se a staňte se součástí komunity myšlenek</h1>
+                <p className={`${st.h1}`}>Nová myšlenka — nový krok</p>
                 <div className={`${gSt.centerDiv}`}>
                     <div className={`${gSt.trWindow} ${st.trWindow}`}>
                         <input type="text"
                                className={`${gSt.input}`}
-                               placeholder={"Ім'я користувача"}
+                               placeholder={"Uživatelské jméno"}
                                value={username} onChange={(e) => setUsername(e.target.value)}/>
                         <input type="text"
                                className={`${gSt.input}`}
-                               placeholder={"Електронна пошта"}
+                               placeholder={"E-mail"}
                                value={email} onChange={(e) => setEmail(e.target.value)}/>
                         <div className={`${gSt.password}`}>
                             <input type={showPassword ? "text" : "password"}
                                    className={`${gSt.input}`}
                                    value={password}
-                                   placeholder={"Пароль"}
+                                   placeholder={"Heslo"}
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <span
                                 onClick={() => setShowPassword(!showPassword)}>
                                 <img
                                     src={showPassword ? closeEye : openEye}
-                                    alt="Password visibility"
+                                    alt="Zobrazení hesla"
                                     className={gSt.eyeImg}
                                 />
                             </span>
@@ -114,13 +113,13 @@ function Register(){
                             <input type={showRepassword ? "text" : "password"}
                                    className={`${gSt.input}`}
                                    value={repassword}
-                                   placeholder={"Підтвердження паролю"}
+                                   placeholder={"Potvrzení hesla"}
                                    onChange={(e) => setRepassword(e.target.value)}/>
                             <span
                                 onClick={() => setShowRepassword(!showRepassword)}>
                                 <img
                                     src={showRepassword ? closeEye : openEye}
-                                    alt="Password visibility"
+                                    alt="Zobrazení hesla"
                                     className={gSt.eyeImg}
                                 />
                             </span>
@@ -132,18 +131,19 @@ function Register(){
                                 checked={rules}
                                 onChange={(e) => setRules(e.target.checked)}
                             />
-                            Погодження з правилами платформи
+                            Souhlas s pravidly platformy
                         </label>
                         <button className={`${st.registerBtn} ${gSt.blueBtn}`}
-                                onClick={register}>Продовжити</button>
+                                onClick={register}>Pokračovat</button>
                     </div>
                     <div className={`${gSt.ballsWrapper} ${st.ballsWrapper}`}>
                         <Balls vertical={true}/>
                     </div>
                 </div>
                 <Link to={"/"}>
-                    <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}
-                    ><img src={undo} alt=""/>Думку змінено</button>
+                    <button className={`${gSt.blueBtn} ${gSt.undoBtn}`}>
+                        <img src={undo} alt=""/>Myšlenka změněna
+                    </button>
                 </Link>
             </div>
         </div>

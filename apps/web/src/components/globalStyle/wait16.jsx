@@ -16,14 +16,14 @@ function Wait16(){
                  style={{margin: "40px 80px"}}
             />
             <div className={st.main2}>
-                <h1>Трохи зачекай 🌱</h1>
+                <h1>Počkej trochu 🌱</h1>
                 <p style={{
-                        marginTop: "-20px",
-                        textAlign: "center"
-                    }}>
-                    Dumka — це простір для тих, кому вже є 16.
-                    Але ми впевнені, що час швидко мине, <br/> і ти
-                    зможеш приєднатися 😉
+                    marginTop: "-20px",
+                    textAlign: "center"
+                }}>
+                    Dumka je prostor pro ty, komu je už 16.
+                    Ale jsme si jisti, že čas rychle uteče, <br/> a
+                    brzy se k nám budeš moci připojit 😉
                 </p>
                 <img src={girl}
                      style={{
@@ -40,7 +40,7 @@ function Wait16(){
                             margin: "100px 0px 50px 80px",
                         }}>
                     <img src={undo}
-                         alt=""/>Думку змінено
+                         alt=""/>Myšlenka změněna
                 </button>
             </Link>
         </div>

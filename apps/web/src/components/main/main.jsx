@@ -71,32 +71,32 @@ function Main() {
                     <div className={st.options}>
                         <Link to={"/interests"} className={st.option}>
                             <img src={sparkles} alt=""/>
-                            <p>Помічник</p>
+                            <p>Asistent</p>
                         </Link>
 
                         <Link to={"/userProfile"} className={st.option}>
                             <img src={profile} alt=""/>
-                            <p>Профіль</p>
+                            <p>Profil</p>
                         </Link>
 
                         <Link to={"/addPost"} className={st.option}>
                             <img src={create} alt=""/>
-                            <p>Створити</p>
+                            <p>Vytvořit</p>
                         </Link>
 
                         {/*<Link className={st.option}>*/}
                         {/*    <img src={following} alt=""/>*/}
-                        {/*    <p>Уподобайки</p>*/}
+                        {/*    <p>Oblíbené</p>*/}
                         {/*</Link>*/}
 
                         <Link to="/bookmarks" className={st.option}>
                             <img src={pin} alt=""/>
-                            <p>Збереження</p>
+                            <p>Záložky</p>
                         </Link>
 
                         <Link to={"/additionalUserSettings"} className={st.option}>
                             <img src={gear} alt=""/>
-                            <p>Налаштування</p>
+                            <p>Nastavení</p>
                         </Link>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ function Main() {
                         className={viewMode === "feeds" ? st.active : st.inactive}
                         onClick={() => setViewMode("feeds")}
                     >
-                        Фіди
+                        Feedy
                     </p>
 
                     <hr className={st.divider} />
@@ -115,7 +115,7 @@ function Main() {
                         className={viewMode === "snips" ? st.active : st.inactive}
                         onClick={() => setViewMode("snips")}
                     >
-                        Сніпи
+                        Snipy
                     </p>
                 </div>
 
@@ -134,7 +134,7 @@ function Main() {
                                             </div>
                                             <div className={st.col}>
                                                 <p>{n.user.userName}</p>
-                                                <p>Приєднується до ваших оновлень</p>
+                                                <p>Připojuje se k vašim aktualizacím</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -150,7 +150,7 @@ function Main() {
                                             </div>
                                             <div className={st.col}>
                                                 <p>{n.user.userName}</p>
-                                                <p>Поширив(-ла) вашу думку</p>
+                                                <p>Sdílel(-a) váš příspěvek</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -166,7 +166,7 @@ function Main() {
                                             </div>
                                             <div className={st.col}>
                                                 <p>{n.user.userName}</p>
-                                                <p>Вподобав(-ла) вашу думку</p>
+                                                <p>Líbí se mu(-jí) váš příspěvek</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -190,7 +190,7 @@ function Main() {
                                     setSearch({ type: "", value: e.target.value });
                                     setShowResults(true);
                                 }}
-                                placeholder="Пошук"
+                                placeholder="Hledat"
                                 className={st.searchInput}
                             />
                             <img src={searchIcon} alt="Search" className={st.searchIcon} />

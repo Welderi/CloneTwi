@@ -28,7 +28,7 @@ namespace CloneTwiAPI.Services
         {
             var existingUser = await _userManager.FindByNameAsync(model.UserName);
             if (existingUser != null)
-                return new BadRequestObjectResult("Користувач вже існує");
+                return new BadRequestObjectResult("Uživatel již existuje");
 
             var user = new ApplicationUser
             {
@@ -39,7 +39,7 @@ namespace CloneTwiAPI.Services
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
-                return new OkObjectResult("Ви успішно зареєструвалися");
+                return new OkObjectResult("Úspěšně jste se zaregistrovali");
 
             var errors = result.Errors.Select(e => e.Description);
             return new BadRequestObjectResult(errors);
@@ -51,12 +51,12 @@ namespace CloneTwiAPI.Services
                ?? await _userManager.FindByEmailAsync(model.UserNameEmail);
 
             if (user == null)
-                return new BadRequestObjectResult("Користувач не існує");
+                return new BadRequestObjectResult("Uživatel neexistuje");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
             if (!result.Succeeded)
-                return new UnauthorizedObjectResult("Неправильний пароль");
+                return new UnauthorizedObjectResult("Špatné heslo");
 
             var token = _generateToken.GenerateJwtToken(user);
 
@@ -68,7 +68,7 @@ namespace CloneTwiAPI.Services
                 Expires = DateTime.UtcNow.AddHours(100)
             });
 
-            return new OkObjectResult("Ви успішно зареєструвалися!");
+            return new OkObjectResult("Úspěšně jste se přihlásili!");
         }
 
         public async Task<ActionResult> ChangePassword(ChangePasswordDTO model)
@@ -76,14 +76,14 @@ namespace CloneTwiAPI.Services
             var user = await _userGetter.GetUser();
 
             if (model.CurrentPassword == model.NewPassword)
-                return new BadRequestObjectResult("Новий пароль не може бути схожим на поточний");
+                return new BadRequestObjectResult("Nové heslo nemůže být stejné jako současné");
 
             var result = await _userManager.ChangePasswordAsync(user!, model.CurrentPassword, model.NewPassword);
 
             if (!result.Succeeded)
                 return new BadRequestObjectResult(result.Errors);
 
-            return new OkObjectResult("Ви успішно змінили свій пароль!");
+            return new OkObjectResult("Úspěšně jste změnili své heslo!");
         }
 
         public async Task<ActionResult> AdditionalSettings(AdditionalUserSettingsDTO model)
@@ -105,7 +105,7 @@ namespace CloneTwiAPI.Services
 
             await _userManager.UpdateAsync(user!);
 
-            return new OkObjectResult("You have everything added");
+            return new OkObjectResult("Všechny údaje byly úspěšně aktualizovány");
         }
 
         public async Task<IActionResult?> GetInfo(string? userId)
@@ -135,6 +135,7 @@ namespace CloneTwiAPI.Services
 
             return new OkObjectResult(user == userId ? true : false);
         }
+
         public async Task<IActionResult> GetAllUsers()
         {
             var currentUser = await _userGetter.GetUser();
